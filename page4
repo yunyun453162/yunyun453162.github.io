@@ -25,7 +25,7 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-#Hello,Markdown
+#基本格式
 
 ####Is it hard to understand?
 
@@ -175,11 +175,44 @@ Javascript:
  + 内层列表项目
 - 外层列表项目
 
+
+#代码
+
+    直接把一个URL显示为超级连接：
+
+    也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+    图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+    此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+    [图灵社区][1]
+    ![图灵社区Logo][2]
+
+    [1]:http://www.ituring.com.cn
+    [2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+
+#效果
+
+直接把一个URL显示为超级连接：
+
+也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+[图灵社区][1]
+![图灵社区Logo][2]
+
+[1]:http://www.ituring.com.cn
+[2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
-<h1 id="hellomarkdown">Hello,Markdown</h1>
+<h1 id="">基本格式</h1>
 
 <h4 id="isithardtounderstand">Is it hard to understand?</h4>
 
@@ -344,6 +377,36 @@ document.write(fib(10));
 <ul><li>内层列表项目</li></ul></li>
 <li>外层列表项目</li>
 </ul>
+
+<h1 id="">代码</h1>
+
+<pre><code>直接把一个URL显示为超级连接：
+
+也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+[图灵社区][1]
+![图灵社区Logo][2]
+
+[1]:http://www.ituring.com.cn
+[2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+</code></pre>
+
+<h1 id="">效果</h1>
+
+<p>直接把一个URL显示为超级连接：</p>
+
+<p>也可以这样：<a href="http://www.ituring.com.cn">图灵社区</a></p>
+
+<p>图像和链接非常类似，区别在开头加一个惊叹号： <img src="http://www.turingbook.com/Content/img/Turing.Gif" alt="这是一个Logo图像" title=""></p>
+
+<p>此外，还可以以索引方式把url都列在文章的最后，例如这样：</p>
+
+<p><a href="http://www.ituring.com.cn">图灵社区</a>
+<img src="http://www.ituring.com.cn/Content/img/Turing.Gif" alt="图灵社区Logo" title=""></p>
 <!-- content end -->
 </div>
 <br>
