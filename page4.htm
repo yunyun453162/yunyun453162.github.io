@@ -1,0 +1,480 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+#基本格式
+
+####Is it hard to understand?
+
+
+> This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+> consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+> Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.
+> 
+> Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+> id sem consectetuer libero luctus adipiscing.
+
+And,  how it works?  
+
+**blod** 
+*??asdfg*
+*说好的斜体呢,还不支持中文符号，简直烂*
+
+单个回车
+视为空格
+
+连续回车
+
+才能分段
+
+行尾加两个空格 这里哦->  
+表示段内换行
+
+必须是段的行开头才行哦
+行的开头空4个空格，表示程序代码，例如：
+
+C#:
+
+    //这里显示一些代码，在正文显示中会自动识别语言，进行代码染色，这是一段C#代码
+    public class Blog
+    {
+         public int Id { get; set; }
+         public string Subject { get; set; }
+    }
+
+Python:
+
+    keywords ＝  ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
+    print dict([(i[0],list(i[1])) for i in groupby(sorted(keywords),lambda    x:x[0].lower())])
+
+Javascript:
+
+    /**
+     * nth element in the fibonacci series.
+     * @param n >= 0
+     * @return the nth element, >= 0.
+     */
+    function fib(n) {
+        var a = 1, b = 1;
+        var tmp;
+        while (--n >= 0) {
+            tmp = a;
+            a += b;
+           b = tmp;
+        }
+        return a;
+    }
+
+    document.write(fib(10));
+
+代码
+
+    >表示引用文字内容。
+    #表示这是一级标题
+    ##表示这是二级标题
+    ###表示这是三级标题
+    ……
+    ###### 最小是六级标题
+
+    也可以这样表示大标题
+    =
+
+    这样表示小标题
+    -
+
+
+效果
+>表示引用文字内容。
+
+#表示这是一级标题
+##表示这是二级标题
+###表示这是三级标题
+……
+###### 最小是六级标题
+
+也可以这样表示大标题
+=
+
+这样表示小标题
+-
+
+
+代码
+
+
+    --- -
+    上面是一条分隔线
+    --- -
+     
+    - 这是无序列表项目
+    - 这是无序列表项目
+    - 这是无序列表项目
+
+    两个列表之间不能相邻，否则会解释为嵌套的列表
+
+    1. 这是有序列表项目
+    2. 这是有序列表项目
+    3. 这是有序列表项目
+
+    下面这个是嵌套的列表
+
+    - 外层列表项目
+    + 内层列表项目
+    + 内层无序列表项目
+    + 内层列表项目
+    - 外层列表项目
+
+
+效果
+--- -
+上面是一条分隔线
+--- -
+
+- 这是无序列表项目
+- 这是无序列表项目
+- 这是无序列表项目
+
+两个列表之间不能相邻，否则会解释为嵌套的列表
+
+1. 这是有序列表项目
+2. 这是有序列表项目
+3. 这是有序列表项目
+
+下面这个是嵌套的列表
+
+- 外层列表项目
+ + 内层列表项目
+ + 内层无序列表项目
+- 内层有序列表项目
+  + 1.这是有序列表
+  + 2.这是有序列表
+- 内层有序列表项目
+ + 内层列表项目
+- 外层列表项目
+
+
+#代码
+
+    直接把一个URL显示为超级连接：
+
+    也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+    图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+    此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+    [图灵社区][1]
+    ![图灵社区Logo][2]
+
+    [1]:http://www.ituring.com.cn
+    [2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+
+#效果
+
+直接把一个URL显示为超级连接：
+
+也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+[图灵社区][1]
+![图灵社区Logo][2]
+
+[1]:http://www.ituring.com.cn
+[2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+<h1 id="">基本格式</h1>
+
+<h4 id="isithardtounderstand">Is it hard to understand?</h4>
+
+<blockquote>
+  <p>This is a blockquote with two paragraphs. Lorem ipsum dolor sit amet,
+  consectetuer adipiscing elit. Aliquam hendrerit mi posuere lectus.
+  Vestibulum enim wisi, viverra nec, fringilla in, laoreet vitae, risus.</p>
+  
+  <p>Donec sit amet nisl. Aliquam semper ipsum sit amet velit. Suspendisse
+  id sem consectetuer libero luctus adipiscing.</p>
+</blockquote>
+
+<p>And,  how it works?  </p>
+
+<p><strong>blod</strong> 
+<em>??asdfg</em>
+<em>说好的斜体呢,还不支持中文符号，简直烂</em></p>
+
+<p>单个回车
+视为空格</p>
+
+<p>连续回车</p>
+
+<p>才能分段</p>
+
+<p>行尾加两个空格 这里哦-&gt; <br>
+表示段内换行</p>
+
+<p>必须是段的行开头才行哦
+行的开头空4个空格，表示程序代码，例如：</p>
+
+<p>C#:</p>
+
+<pre><code>//这里显示一些代码，在正文显示中会自动识别语言，进行代码染色，这是一段C#代码
+public class Blog
+{
+     public int Id { get; set; }
+     public string Subject { get; set; }
+}
+</code></pre>
+
+<p>Python:</p>
+
+<pre><code>keywords ＝  ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
+print dict([(i[0],list(i[1])) for i in groupby(sorted(keywords),lambda    x:x[0].lower())])
+</code></pre>
+
+<p>Javascript:</p>
+
+<pre><code>/**
+ * nth element in the fibonacci series.
+ * @param n &gt;= 0
+ * @return the nth element, &gt;= 0.
+ */
+function fib(n) {
+    var a = 1, b = 1;
+    var tmp;
+    while (--n &gt;= 0) {
+        tmp = a;
+        a += b;
+       b = tmp;
+    }
+    return a;
+}
+
+document.write(fib(10));
+</code></pre>
+
+<p>代码</p>
+
+<pre><code>&gt;表示引用文字内容。
+#表示这是一级标题
+##表示这是二级标题
+###表示这是三级标题
+……
+###### 最小是六级标题
+
+也可以这样表示大标题
+=
+
+这样表示小标题
+-
+</code></pre>
+
+<p>效果</p>
+
+<blockquote>
+  <p>表示引用文字内容。</p>
+</blockquote>
+
+<h1 id="">表示这是一级标题</h1>
+
+<h2 id="">表示这是二级标题</h2>
+
+<h3 id="">表示这是三级标题</h3>
+
+<p>……</p>
+
+<h6 id="">最小是六级标题</h6>
+
+<h1 id="">也可以这样表示大标题</h1>
+
+<h2 id="">这样表示小标题</h2>
+
+<p>代码</p>
+
+<pre><code>--- -
+上面是一条分隔线
+--- -
+
+- 这是无序列表项目
+- 这是无序列表项目
+- 这是无序列表项目
+
+两个列表之间不能相邻，否则会解释为嵌套的列表
+
+1. 这是有序列表项目
+2. 这是有序列表项目
+3. 这是有序列表项目
+
+下面这个是嵌套的列表
+
+- 外层列表项目
++ 内层列表项目
++ 内层无序列表项目
++ 内层列表项目
+- 外层列表项目
+</code></pre>
+
+<p>效果</p>
+
+<hr>
+
+<p>上面是一条分隔线</p>
+
+<hr>
+
+<ul>
+<li>这是无序列表项目</li>
+<li>这是无序列表项目</li>
+<li>这是无序列表项目</li>
+</ul>
+
+<p>两个列表之间不能相邻，否则会解释为嵌套的列表</p>
+
+<ol>
+<li>这是有序列表项目</li>
+<li>这是有序列表项目</li>
+<li>这是有序列表项目</li>
+</ol>
+
+<p>下面这个是嵌套的列表</p>
+
+<ul>
+<li>外层列表项目
+<ul><li>内层列表项目</li>
+<li>内层无序列表项目</li></ul></li>
+<li>内层有序列表项目
+<ul><li>1.这是有序列表</li>
+<li>2.这是有序列表</li></ul></li>
+<li>内层有序列表项目
+<ul><li>内层列表项目</li></ul></li>
+<li>外层列表项目</li>
+</ul>
+
+<h1 id="">代码</h1>
+
+<pre><code>直接把一个URL显示为超级连接：
+
+也可以这样：[图灵社区](http://www.ituring.com.cn)
+
+图像和链接非常类似，区别在开头加一个惊叹号： ![这是一个Logo图像](http://www.turingbook.com/Content/img/Turing.Gif)
+
+此外，还可以以索引方式把url都列在文章的最后，例如这样：
+
+[图灵社区][1]
+![图灵社区Logo][2]
+
+[1]:http://www.ituring.com.cn
+[2]:http://www.ituring.com.cn/Content/img/Turing.Gif
+</code></pre>
+
+<h1 id="">效果</h1>
+
+<p>直接把一个URL显示为超级连接：</p>
+
+<p>也可以这样：<a href="http://www.ituring.com.cn">图灵社区</a></p>
+
+<p>图像和链接非常类似，区别在开头加一个惊叹号： <img src="http://www.turingbook.com/Content/img/Turing.Gif" alt="这是一个Logo图像" title=""></p>
+
+<p>此外，还可以以索引方式把url都列在文章的最后，例如这样：</p>
+
+<p><a href="http://www.ituring.com.cn">图灵社区</a>
+<img src="http://www.ituring.com.cn/Content/img/Turing.Gif" alt="图灵社区Logo" title=""></p>
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2015 by Kobe, Designed by Kobe</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "page4.htm";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
