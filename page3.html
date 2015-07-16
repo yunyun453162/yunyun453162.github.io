@@ -41,6 +41,7 @@ And,  how it works?
 
 **blod** 
 *??asdfg*
+*说好的斜体呢,还不支持中文符号，简直烂*
 
 单个回车
 视为空格
@@ -48,6 +49,9 @@ And,  how it works?
 连续回车
 
 才能分段
+
+行尾加两个空格 这里哦->  
+表示段内换行
 
 必须是段的行开头才行哦
 行的开头空4个空格，表示程序代码，例如：
@@ -63,7 +67,7 @@ C#:
 
 Python:
 
-    keywords = ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
+    keywords ＝  ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
     print dict([(i[0],list(i[1])) for i in groupby(sorted(keywords),lambda    x:x[0].lower())])
 
 Javascript:
@@ -86,7 +90,20 @@ Javascript:
 
     document.write(fib(10));
 
-代码
+
+>表示引用文字内容。
+
+#表示这是一级标题
+##表示这是二级标题
+###表示这是三级标题
+……
+###### 最小是六级标题
+
+也可以这样表示大标题
+=
+
+这样表示小标题
+-
 
     >表示引用文字内容。
     #表示这是一级标题
@@ -101,20 +118,6 @@ Javascript:
     这样表示小标题
     -
 
-效果
->表示引用文字内容。
-
-#表示这是一级标题
-##表示这是二级标题
-###表示这是三级标题
-……
-###### 最小是六级标题
-
-也可以这样表示大标题
-=
-
-这样表示小标题
--
 
 <!-- markdown end -->
 </div>
@@ -136,7 +139,8 @@ Javascript:
 <p>And,  how it works?  </p>
 
 <p><strong>blod</strong> 
-<em>??asdfg</em></p>
+<em>??asdfg</em>
+<em>说好的斜体呢,还不支持中文符号，简直烂</em></p>
 
 <p>单个回车
 视为空格</p>
@@ -144,6 +148,9 @@ Javascript:
 <p>连续回车</p>
 
 <p>才能分段</p>
+
+<p>行尾加两个空格 这里哦-&gt; <br>
+表示段内换行</p>
 
 <p>必须是段的行开头才行哦
 行的开头空4个空格，表示程序代码，例如：</p>
@@ -160,7 +167,7 @@ public class Blog
 
 <p>Python:</p>
 
-<pre><code>keywords = ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
+<pre><code>keywords ＝  ["dsaa","Asd","sadc","Gdfd","gdfdd","gaf","gabdddddd","eg"]
 print dict([(i[0],list(i[1])) for i in groupby(sorted(keywords),lambda    x:x[0].lower())])
 </code></pre>
 
@@ -185,24 +192,6 @@ function fib(n) {
 document.write(fib(10));
 </code></pre>
 
-<p>代码</p>
-
-<pre><code>&gt;表示引用文字内容。
-#表示这是一级标题
-##表示这是二级标题
-###表示这是三级标题
-……
-###### 最小是六级标题
-
-也可以这样表示大标题
-=
-
-这样表示小标题
--
-</code></pre>
-
-<p>效果</p>
-
 <blockquote>
   <p>表示引用文字内容。</p>
 </blockquote>
@@ -220,6 +209,20 @@ document.write(fib(10));
 <h1 id="">也可以这样表示大标题</h1>
 
 <h2 id="">这样表示小标题</h2>
+
+<pre><code>&gt;表示引用文字内容。
+#表示这是一级标题
+##表示这是二级标题
+###表示这是三级标题
+……
+###### 最小是六级标题
+
+也可以这样表示大标题
+=
+
+这样表示小标题
+-
+</code></pre>
 <!-- content end -->
 </div>
 <br>
