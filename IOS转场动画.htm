@@ -49,6 +49,10 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
     // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
     - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext;
 
+方法一 是告之UIKit自定义动画的执行时间。  
+方法二 是获取动画上下文。  
+该控制器可以处理简单的非交互式动画，而交互式动画则该实现下面的协议。
+
 ###3. UIViewControllerInteractiveTransitioning
 
 
@@ -85,6 +89,10 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
 - (void)animateTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
 </code></pre>
+
+<p>方法一 是告之UIKit自定义动画的执行时间。 <br>
+方法二 是获取动画上下文。 <br>
+该控制器可以处理简单的非交互式动画，而交互式动画则该实现下面的协议。</p>
 
 <h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
 
