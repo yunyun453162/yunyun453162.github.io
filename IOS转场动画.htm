@@ -37,8 +37,9 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 
 ##转场代理
 
-    转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。
+
+    转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 
 ###1. UIViewControllerContextTransitioning
   这个代理提供动画执行涉及的信息，不能在自己的类中实现它，也不能新建一个类来实现接口。实现该代理的对象由UIKit在运行过程中提供，开发者可以获取到动画容器view,开始的view,新的view...我们可以把实现这个协议的对像称之为动画上下文。通过它我们可以知道谁要消失，谁要出现，然后自己实现切换动画，完了用completeTransition:来通知上下文动画完成。
@@ -92,10 +93,10 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 
 <h2 id="">转场代理</h2>
 
+<p>在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。</p>
+
 <pre><code>转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 </code></pre>
-
-<p>在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。</p>
 
 <h3 id="1uiviewcontrollercontexttransitioning">1. UIViewControllerContextTransitioning</h3>
 
