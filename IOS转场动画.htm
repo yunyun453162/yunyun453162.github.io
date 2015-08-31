@@ -32,11 +32,12 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
     我们的应用很多时候在要在三种方式方间来回切换，系统虽然提供了默认的动画，
     但这种千篇一律的动画效果很难给用户耳目一新的感觉，帮助我们从百万app中脱颖而出。
     幸运的是，苹果也给开发者留下了定制的空间－转场动画。
-    转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 
 在开始做动画前，我们需要了解一些相关的知识，这些都是在ios7后才有的接口。
 
 ##转场代理
+
+    转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。
 
 ###1. UIViewControllerContextTransitioning
@@ -76,7 +77,6 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 ###4.UIViewControllerTransitioningDelegate
 
 
-
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -86,12 +86,14 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 <pre><code>我们的应用很多时候在要在三种方式方间来回切换，系统虽然提供了默认的动画，
 但这种千篇一律的动画效果很难给用户耳目一新的感觉，帮助我们从百万app中脱颖而出。
 幸运的是，苹果也给开发者留下了定制的空间－转场动画。
-转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
 </code></pre>
 
 <p>在开始做动画前，我们需要了解一些相关的知识，这些都是在ios7后才有的接口。</p>
 
 <h2 id="">转场代理</h2>
+
+<pre><code>转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
+</code></pre>
 
 <p>在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。</p>
 
