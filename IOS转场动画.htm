@@ -35,10 +35,11 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。
 
 ###1. UIViewControllerContextTransitioning
-
+  这个代理提供动画执行涉及的信息，不能在自己的类中实现它，也不能新建一个类来实现接口。实现该代理的对象由UIKit在运行过程中提供，开发者可以获取到动画容器view,开始的view,新的view...我们可以把实现这个协议的对像称之为动画上下文。通过它我们可以知道谁要消失，谁要出现，然后自己实现切换动画，完了用completeTransition:来通知上下文动画完成。
 
 ###. UIViewControllerAnimatedTransitioning
-
+实现该协议的类可以称之为动画控制器。  
+在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit。UIKit会用它来控制动画的进行。
 
 ###3. UIViewControllerInteractiveTransitioning
 
@@ -61,7 +62,12 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 
 <h3 id="1uiviewcontrollercontexttransitioning">1. UIViewControllerContextTransitioning</h3>
 
+<p>这个代理提供动画执行涉及的信息，不能在自己的类中实现它，也不能新建一个类来实现接口。实现该代理的对象由UIKit在运行过程中提供，开发者可以获取到动画容器view,开始的view,新的view...我们可以把实现这个协议的对像称之为动画上下文。通过它我们可以知道谁要消失，谁要出现，然后自己实现切换动画，完了用completeTransition:来通知上下文动画完成。</p>
+
 <h3 id="uiviewcontrolleranimatedtransitioning">. UIViewControllerAnimatedTransitioning</h3>
+
+<p>实现该协议的类可以称之为动画控制器。 <br>
+在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit。UIKit会用它来控制动画的进行。</p>
 
 <h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
 
