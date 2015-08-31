@@ -38,7 +38,7 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 ###1. UIViewControllerContextTransitioning
   这个代理提供动画执行涉及的信息，不能在自己的类中实现它，也不能新建一个类来实现接口。实现该代理的对象由UIKit在运行过程中提供，开发者可以获取到动画容器view,开始的view,新的view...我们可以把实现这个协议的对像称之为动画上下文。通过它我们可以知道谁要消失，谁要出现，然后自己实现切换动画，完了用completeTransition:来通知上下文动画完成。
 
-###. UIViewControllerAnimatedTransitioning
+###2. UIViewControllerAnimatedTransitioning
 实现该协议的类可以称之为动画控制器。  
 在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit，UIKit会用它来控制动画的进行。
 它主要有如下两个方法：  
@@ -54,7 +54,10 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 方法二 是获取动画上下文。  
 该控制器可以处理简单的非交互式动画，而交互式动画则该实现下面的协议。
 
-###3. UIViewControllerInteractiveTransitioning
+###3. UIViewControllerInteractiveTransitioning  
+
+IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功能的实现就和这个代理息息相关了。
+
 
 
 ###4.UIViewControllerTransitioningDelegate
@@ -79,7 +82,7 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 
 <p>这个代理提供动画执行涉及的信息，不能在自己的类中实现它，也不能新建一个类来实现接口。实现该代理的对象由UIKit在运行过程中提供，开发者可以获取到动画容器view,开始的view,新的view...我们可以把实现这个协议的对像称之为动画上下文。通过它我们可以知道谁要消失，谁要出现，然后自己实现切换动画，完了用completeTransition:来通知上下文动画完成。</p>
 
-<h3 id="uiviewcontrolleranimatedtransitioning">. UIViewControllerAnimatedTransitioning</h3>
+<h3 id="2uiviewcontrolleranimatedtransitioning">2. UIViewControllerAnimatedTransitioning</h3>
 
 <p>实现该协议的类可以称之为动画控制器。 <br>
 在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit，UIKit会用它来控制动画的进行。
@@ -98,6 +101,8 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 该控制器可以处理简单的非交互式动画，而交互式动画则该实现下面的协议。</p>
 
 <h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
+
+<p>IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功能的实现就和这个代理息息相关了。</p>
 
 <h3 id="4uiviewcontrollertransitioningdelegate">4.UIViewControllerTransitioningDelegate</h3>
 <!-- content end -->
