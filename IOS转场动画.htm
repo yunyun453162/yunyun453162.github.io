@@ -74,8 +74,18 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
     - (UIViewAnimationCurve)completionCurve;
 
     @end
+这两个接口提供的信息和上面的协议基本相同，不同的是你需要在实现类中添加手势和对手势进行处理。
 
+普通动画控制器和交互式动画控制器都要获取到动画上下文中的信息，都需要在动画结束后手动调用completeTransition，不同的地方在于，交互式动画有动画进度，这就意味着随意用户手势的变化可以取消转换。
+交互式动画比普通动画需要多调用以下接口：
 
+    //更新动画进度
+    [_context updateInteractiveTransition:percent];
+    //取消或完成交互
+    [_context cancelInteractiveTransition]/[_context finishInteractiveTransition];
+    //完成或取消切换
+     [_context completeTransition:YES/NO];
+    
 ###4.UIViewControllerTransitioningDelegate
 
 
@@ -134,6 +144,19 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 - (UIViewAnimationCurve)completionCurve;
 
 @end
+</code></pre>
+
+<p>这两个接口提供的信息和上面的协议基本相同，不同的是你需要在实现类中添加手势和对手势进行处理。</p>
+
+<p>普通动画控制器和交互式动画控制器都要获取到动画上下文中的信息，都需要在动画结束后手动调用completeTransition，不同的地方在于，交互式动画有动画进度，这就意味着随意用户手势的变化可以取消转换。
+交互式动画比普通动画需要多调用以下接口：</p>
+
+<pre><code>//更新动画进度
+[_context updateInteractiveTransition:percent];
+//取消或完成交互
+[_context cancelInteractiveTransition]/[_context finishInteractiveTransition];
+//完成或取消切换
+ [_context completeTransition:YES/NO];
 </code></pre>
 
 <h3 id="4uiviewcontrollertransitioningdelegate">4.UIViewControllerTransitioningDelegate</h3>
