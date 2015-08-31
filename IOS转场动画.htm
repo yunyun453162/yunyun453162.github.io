@@ -39,7 +39,15 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 
 ###. UIViewControllerAnimatedTransitioning
 实现该协议的类可以称之为动画控制器。  
-在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit。UIKit会用它来控制动画的进行。
+在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit，UIKit会用它来控制动画的进行。
+它主要有如下两个方法：  
+
+    // synchronize with the main animation. 
+    - (NSTimeInterval)transitionDuration:(id <UIViewControllerContextTransitioning>)transitionContext;
+
+
+    // This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
+    - (void)animateTransition:(id <UIViewControllerContextTransitioning>)transitionContext;
 
 ###3. UIViewControllerInteractiveTransitioning
 
@@ -67,7 +75,16 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 <h3 id="uiviewcontrolleranimatedtransitioning">. UIViewControllerAnimatedTransitioning</h3>
 
 <p>实现该协议的类可以称之为动画控制器。 <br>
-在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit。UIKit会用它来控制动画的进行。</p>
+在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit，UIKit会用它来控制动画的进行。
+它主要有如下两个方法：  </p>
+
+<pre><code>// synchronize with the main animation. 
+- (NSTimeInterval)transitionDuration:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
+
+
+// This method can only  be a nop if the transition is interactive and not a percentDriven interactive transition.
+- (void)animateTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
+</code></pre>
 
 <h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
 
