@@ -88,6 +88,23 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
     
 ###4.UIViewControllerTransitioningDelegate
 
+看看下面的接口，便明白这个代理是为了模态视图切换而新加的。NavigagtionController有UINavigationControllerDelegate来方便我们传入自定义的动画控制器，而模态视图需要通过以下的接口来传入。
+
+    @protocol UIViewControllerTransitioningDelegate <NSObject>
+
+    @optional
+    - (id <UIViewControllerAnimatedTransitioning>)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source;
+
+    - (id <UIViewControllerAnimatedTransitioning>)animationControllerForDismissedController:(UIViewController *)dismissed;
+
+    - (id <UIViewControllerInteractiveTransitioning>)interactionControllerForPresentation:(id <UIViewControllerAnimatedTransitioning>)animator;
+
+    - (id <UIViewControllerInteractiveTransitioning>)interactionControllerForDismissal:(id <UIViewControllerAnimatedTransitioning>)animator;
+
+    - (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source NS_AVAILABLE_IOS(8_0);
+
+    @end
+
 
 <!-- markdown end -->
 </div>
@@ -160,6 +177,24 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 </code></pre>
 
 <h3 id="4uiviewcontrollertransitioningdelegate">4.UIViewControllerTransitioningDelegate</h3>
+
+<p>看看下面的接口，便明白这个代理是为了模态视图切换而新加的。NavigagtionController有UINavigationControllerDelegate来方便我们传入自定义的动画控制器，而模态视图需要通过以下的接口来传入。</p>
+
+<pre><code>@protocol UIViewControllerTransitioningDelegate &lt;NSObject&gt;
+
+@optional
+- (id &lt;UIViewControllerAnimatedTransitioning&gt;)animationControllerForPresentedController:(UIViewController *)presented presentingController:(UIViewController *)presenting sourceController:(UIViewController *)source;
+
+- (id &lt;UIViewControllerAnimatedTransitioning&gt;)animationControllerForDismissedController:(UIViewController *)dismissed;
+
+- (id &lt;UIViewControllerInteractiveTransitioning&gt;)interactionControllerForPresentation:(id &lt;UIViewControllerAnimatedTransitioning&gt;)animator;
+
+- (id &lt;UIViewControllerInteractiveTransitioning&gt;)interactionControllerForDismissal:(id &lt;UIViewControllerAnimatedTransitioning&gt;)animator;
+
+- (UIPresentationController *)presentationControllerForPresentedViewController:(UIViewController *)presented presentingViewController:(UIViewController *)presenting sourceViewController:(UIViewController *)source NS_AVAILABLE_IOS(8_0);
+
+@end
+</code></pre>
 <!-- content end -->
 </div>
 <br>
