@@ -57,11 +57,19 @@ IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationContr
 ###3. UIViewControllerInteractiveTransitioning  
 
 IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功能的实现就和这个代理息息相关了。
+主要接口：  
+      
+    @protocol UIViewControllerInteractiveTransitioning <NSObject>
+    - (void)startInteractiveTransition:(id <UIViewControllerContextTransitioning>)transitionContext;
 
+    @optional
+    - (CGFloat)completionSpeed;
+    - (UIViewAnimationCurve)completionCurve;
+
+    @end
 
 
 ###4.UIViewControllerTransitioningDelegate
-
 
 
 
@@ -102,7 +110,18 @@ IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功�
 
 <h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
 
-<p>IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功能的实现就和这个代理息息相关了。</p>
+<p>IOS7后面有个非常酷的功能，就是侧滑返回上一页。而这个功能的实现就和这个代理息息相关了。
+主要接口：  </p>
+
+<pre><code>@protocol UIViewControllerInteractiveTransitioning &lt;NSObject&gt;
+- (void)startInteractiveTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
+
+@optional
+- (CGFloat)completionSpeed;
+- (UIViewAnimationCurve)completionCurve;
+
+@end
+</code></pre>
 
 <h3 id="4uiviewcontrollertransitioningdelegate">4.UIViewControllerTransitioningDelegate</h3>
 <!-- content end -->
