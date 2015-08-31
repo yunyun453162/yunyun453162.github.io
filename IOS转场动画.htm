@@ -25,12 +25,47 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-before begin to write please click 'new post' or 'new page' first
+
+
+IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationController,模态视图。
+</p>我们的应用很多时候在要在三种方式方间来回切换，系统虽然提供了默认的动画，但这种千篇一律的动画效果很难给用户耳目一新的感觉，帮助我们从百万app中脱颖而出。幸运的是，苹果也给开发者留下了定制的空间－转场动画。转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。
+
+
+##转场代理
+在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。
+
+###1. UIViewControllerContextTransitioning
+
+
+###. UIViewControllerAnimatedTransitioning
+
+
+###3. UIViewControllerInteractiveTransitioning
+
+
+###4.UIViewControllerTransitioningDelegate
+
+
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>IOS的视图组织呈现方式有三种:UITabbarViewController,UINavigationController,模态视图。
+</p>我们的应用很多时候在要在三种方式方间来回切换，系统虽然提供了默认的动画，但这种千篇一律的动画效果很难给用户耳目一新的感觉，帮助我们从百万app中脱颖而出。幸运的是，苹果也给开发者留下了定制的空间－转场动画。转场动画相关的代理都在  UIKit/UIViewControllerTransitionCoordinator.h 中。<p></p>
 
+<h2 id="">转场代理</h2>
+
+<p>在转场动画中我们可能会用到以下几个代理：UIViewControllerContextTransitioning、UIViewControllerAnimatedTransitioning、UIViewControllerInteractiveTransitioning、UIViewControllerTransitioningDelegate，在下面我们来一一分析。</p>
+
+<h3 id="1uiviewcontrollercontexttransitioning">1. UIViewControllerContextTransitioning</h3>
+
+<h3 id="uiviewcontrolleranimatedtransitioning">. UIViewControllerAnimatedTransitioning</h3>
+
+<h3 id="3uiviewcontrollerinteractivetransitioning">3. UIViewControllerInteractiveTransitioning</h3>
+
+<h3 id="4uiviewcontrollertransitioningdelegate">4.UIViewControllerTransitioningDelegate</h3>
 <!-- content end -->
 </div>
 <br>
