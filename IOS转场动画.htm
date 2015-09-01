@@ -211,6 +211,10 @@ UITabBarControllerDelegate这个代理比较少用，它和UINavigationControlle
         }
 
 
+完成上述步骤我们就自定义实现了一个navigationController的一个pop动画。如果不同的页面有很多不同动画效果的话我们可以建一个管理类来做nav代理，根据fromviewcontroller和toViewController来分别传入不同的动画控制器。
+
+整个定制的过程非常简单，tabbarcontroller和模态视图的步骤也是类似的，这里就不一一列举了。
+
 
 
 
@@ -428,6 +432,10 @@ fromViewController.view.layer.transform = t;
 }
 </code></pre></li>
 </ol>
+
+<p>完成上述步骤我们就自定义实现了一个navigationController的一个pop动画。如果不同的页面有很多不同动画效果的话我们可以建一个管理类来做nav代理，根据fromviewcontroller和toViewController来分别传入不同的动画控制器。</p>
+
+<p>整个定制的过程非常简单，tabbarcontroller和模态视图的步骤也是类似的，这里就不一一列举了。</p>
 <!-- content end -->
 </div>
 <br>
