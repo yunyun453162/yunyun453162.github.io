@@ -134,6 +134,8 @@ UITabBarControllerDelegate这个代理比较少用，它和UINavigationControlle
         @end
 3. masterViewController导入动画控制器头文件，遵守并实现UINavigationControllerDelegate协议，并实例化一个动画控制器对像，通过代理传给UIKit；
 
+
+
          //首先在viewDidLoad中将NavigationController的代理设为自己(masterViewController)
         self.navigationController.delegate = self;
 
