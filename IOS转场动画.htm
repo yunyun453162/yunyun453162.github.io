@@ -134,8 +134,6 @@ UITabBarControllerDelegate这个代理比较少用，它和UINavigationControlle
         @end
 3. masterViewController导入动画控制器头文件，遵守并实现UINavigationControllerDelegate协议，并实例化一个动画控制器对像，通过代理传给UIKit；
 
-
-
          //首先在viewDidLoad中将NavigationController的代理设为自己(masterViewController)
         self.navigationController.delegate = self;
 
@@ -152,6 +150,67 @@ UITabBarControllerDelegate这个代理比较少用，它和UINavigationControlle
             }
             return nil;
         }
+
+4. 回到我们的动画控制器中去实现我们的动画效果；
+下面是我从一个开源项目中copy过来的动画效果：
+
+        -(void)animateTransition:(id<UIViewControllerContextTransitioning>)transitionContext {
+            //Get references to the view hierarchy
+            UIView *containerView = [transitionContext containerView];
+            UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+            UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+    
+            //Insert 'to' view into the hierarchy，不加入的话就容器中就没有这个视图哦，那就看不到它的动画了。
+            [containerView insertSubview:toViewController.view belowSubview:fromViewController.view];
+    
+            //90 degree transform away from the user
+            CATransform3D t = CATransform3DIdentity;
+            t = CATransform3DRotate(t, M_PI / 2.0, 0.0, 1.0, 0.0);
+            t.m34 = 1.0 / -2000;
+    
+            //Set anchor points for the views
+            [self setAnchorPoint:CGPointMake(0.0, 0.5) forView:toViewController.view];
+            [self setAnchorPoint:CGPointMake(1.0, 0.5) forView:fromViewController.view];
+    
+            //Set appropriate z indexes
+            fromViewController.view.layer.zPosition = 2.0;
+            toViewController.view.layer.zPosition = 1.0;
+    
+            //Apply full transform to the 'to' view to start out with
+            toViewController.view.layer.transform = t;
+    
+            //Animate the transition, applying transform to 'from' view and removing it from 'to' view
+            [UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+            fromViewController.view.layer.transform = t;
+             toViewController.view.layer.transform = CATransform3DIdentity;
+            } completion:^(BOOL finished) {
+                //Reset z indexes (otherwise this will affect other transitions)
+                fromViewController.view.layer.zPosition = 0.0;
+                toViewController.view.layer.zPosition = 0.0;
+        
+                [transitionContext completeTransition:YES];
+            }];
+            }
+
+        -(NSTimeInterval)transitionDuration:(id<UIViewControllerContextTransitioning>)transitionContext {
+            return 0.5;
+        }
+
+             #pragma mark - Helper Methods
+
+        - (void)setAnchorPoint:(CGPoint)anchorPoint forView:(UIView *)view {
+            CGPoint oldOrigin = view.frame.origin;
+            view.layer.anchorPoint = anchorPoint;
+            CGPoint newOrigin = view.frame.origin;
+    
+           CGPoint transition;
+           transition.x = newOrigin.x - oldOrigin.x;
+           transition.y = oldOrigin.y - oldOrigin.y;
+    
+           view.center = CGPointMake (view.center.x - transition.x, view.center.y - transition.y);
+        }
+
+
 
 
 
@@ -295,6 +354,77 @@ self.navigationController.delegate = self;
         return [[AnimationController alloc] init];
     }
     return nil;
+}
+</code></pre></li>
+<li><p>回到我们的动画控制器中去实现我们的动画效果；
+下面是我从一个开源项目中copy过来的动画效果：</p>
+
+<pre><code>-(void)animateTransition:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext {
+    //Get references to the view hierarchy
+    UIView *containerView = [transitionContext containerView];
+    UIViewController *fromViewController = [transitionContext viewControllerForKey:UITransitionContextFromViewControllerKey];
+    UIViewController *toViewController = [transitionContext viewControllerForKey:UITransitionContextToViewControllerKey];
+
+
+<pre><code>//Insert 'to' view into the hierarchy，不加入的话就容器中就没有这个视图哦，那就看不到它的动画了。
+[containerView insertSubview:toViewController.view belowSubview:fromViewController.view];
+
+
+//90 degree transform away from the user
+CATransform3D t = CATransform3DIdentity;
+t = CATransform3DRotate(t, M_PI / 2.0, 0.0, 1.0, 0.0);
+t.m34 = 1.0 / -2000;
+
+
+//Set anchor points for the views
+[self setAnchorPoint:CGPointMake(0.0, 0.5) forView:toViewController.view];
+[self setAnchorPoint:CGPointMake(1.0, 0.5) forView:fromViewController.view];
+
+
+//Set appropriate z indexes
+fromViewController.view.layer.zPosition = 2.0;
+toViewController.view.layer.zPosition = 1.0;
+
+
+//Apply full transform to the 'to' view to start out with
+toViewController.view.layer.transform = t;
+
+
+//Animate the transition, applying transform to 'from' view and removing it from 'to' view
+[UIView animateWithDuration:[self transitionDuration:transitionContext] animations:^{
+fromViewController.view.layer.transform = t;
+ toViewController.view.layer.transform = CATransform3DIdentity;
+} completion:^(BOOL finished) {
+    //Reset z indexes (otherwise this will affect other transitions)
+    fromViewController.view.layer.zPosition = 0.0;
+    toViewController.view.layer.zPosition = 0.0;
+
+
+    [transitionContext completeTransition:YES];
+}];
+}
+</code></pre>
+
+-(NSTimeInterval)transitionDuration:(id&lt;UIViewControllerContextTransitioning&gt;)transitionContext {
+    return 0.5;
+}
+
+
+<pre><code> #pragma mark - Helper Methods
+</code></pre>
+
+- (void)setAnchorPoint:(CGPoint)anchorPoint forView:(UIView *)view {
+    CGPoint oldOrigin = view.frame.origin;
+    view.layer.anchorPoint = anchorPoint;
+    CGPoint newOrigin = view.frame.origin;
+
+
+   CGPoint transition;
+   transition.x = newOrigin.x - oldOrigin.x;
+   transition.y = oldOrigin.y - oldOrigin.y;
+
+
+   view.center = CGPointMake (view.center.x - transition.x, view.center.y - transition.y);
 }
 </code></pre></li>
 </ol>
