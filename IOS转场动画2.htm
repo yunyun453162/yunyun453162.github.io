@@ -35,7 +35,83 @@
    它最主要的工作就是自定了一个个人的动画上下文，这样子我们就可以利用上节所写出来的动画控制器和动画效果代码，而且不用做什么改动,还有良好的扩展性。
 
 
-## 方法二：
+## 方法二：使用CATransition
+
+    - (IBAction)buttonPressed1:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    NSInteger tag = button.tag;
+    
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = .45;
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    
+    switch (tag) {
+        case 101:
+            animation.type = kCATransitionFade;
+            break;
+        case 102:
+            animation.type = kCATransitionPush;
+            break;
+        case 103:
+            animation.type = kCATransitionReveal;
+            break;
+        case 104:
+            animation.type = kCATransitionMoveIn;
+            break;
+        case 201:
+            animation.type = @"cube";
+            break;
+        case 202:
+            animation.type = @"suckEffect";
+            break;
+        case 203:
+            animation.type = @"oglFlip";
+            break;
+        case 204:
+            animation.type = @"rippleEffect";
+            break;
+        case 205:
+            animation.type = @"pageCurl";
+            break;
+        case 206:
+            animation.type = @"pageUnCurl";
+            break;
+        case 207:
+            animation.type = @"cameraIrisHollowOpen";
+            break;
+        case 208:
+            animation.type = @"cameraIrisHollowClose";
+            break;
+        default:
+            break;
+    }
+
+   NSInteger typeID = rand()%4;    
+
+    switch (self.typeID) {
+        case 0:
+            animation.subtype = kCATransitionFromLeft;
+            break;
+        case 1:
+            animation.subtype = kCATransitionFromBottom;
+            break;
+        case 2:
+            animation.subtype = kCATransitionFromRight;
+            break;
+        case 3:
+            animation.subtype = kCATransitionFromTop;
+            break;
+        default:
+            break;
+    }
+    
+    NSUInteger green = [[self.view subviews] indexOfObject:self.greenView];
+    NSUInteger blue = [[self.view subviews] indexOfObject:self.blueView];
+    [self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
+    
+    [[self.view layer] addAnimation:animation forKey:@"animation"];
+     }
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -49,7 +125,85 @@
 
 <p>它最主要的工作就是自定了一个个人的动画上下文，这样子我们就可以利用上节所写出来的动画控制器和动画效果代码，而且不用做什么改动,还有良好的扩展性。</p>
 
-<h2 id="">方法二：</h2>
+<h2 id="catransition">方法二：使用CATransition</h2>
+
+<pre><code>- (IBAction)buttonPressed1:(id)sender {
+UIButton *button = (UIButton *)sender;
+NSInteger tag = button.tag;
+
+CATransition *animation = [CATransition animation];
+animation.delegate = self;
+animation.duration = .45;
+animation.timingFunction = UIViewAnimationCurveEaseInOut;
+
+switch (tag) {
+    case 101:
+        animation.type = kCATransitionFade;
+        break;
+    case 102:
+        animation.type = kCATransitionPush;
+        break;
+    case 103:
+        animation.type = kCATransitionReveal;
+        break;
+    case 104:
+        animation.type = kCATransitionMoveIn;
+        break;
+    case 201:
+        animation.type = @"cube";
+        break;
+    case 202:
+        animation.type = @"suckEffect";
+        break;
+    case 203:
+        animation.type = @"oglFlip";
+        break;
+    case 204:
+        animation.type = @"rippleEffect";
+        break;
+    case 205:
+        animation.type = @"pageCurl";
+        break;
+    case 206:
+        animation.type = @"pageUnCurl";
+        break;
+    case 207:
+        animation.type = @"cameraIrisHollowOpen";
+        break;
+    case 208:
+        animation.type = @"cameraIrisHollowClose";
+        break;
+    default:
+        break;
+}
+</code></pre>
+
+<p>NSInteger typeID = rand()%4;    </p>
+
+<pre><code>switch (self.typeID) {
+    case 0:
+        animation.subtype = kCATransitionFromLeft;
+        break;
+    case 1:
+        animation.subtype = kCATransitionFromBottom;
+        break;
+    case 2:
+        animation.subtype = kCATransitionFromRight;
+        break;
+    case 3:
+        animation.subtype = kCATransitionFromTop;
+        break;
+    default:
+        break;
+}
+
+NSUInteger green = [[self.view subviews] indexOfObject:self.greenView];
+NSUInteger blue = [[self.view subviews] indexOfObject:self.blueView];
+[self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
+
+[[self.view layer] addAnimation:animation forKey:@"animation"];
+ }
+</code></pre>
 <!-- content end -->
 </div>
 <br>
