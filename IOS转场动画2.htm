@@ -39,7 +39,7 @@
 CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
 主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小心一些。
 
-1. 示例1：使用type和subType作layer动画  
+###示例：使用type和subType作layer动画  
 
         - (IBAction)buttonPressed1:(id)sender {
         UIButton *button = (UIButton *)sender;
@@ -115,7 +115,56 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
         [[self.view layer] addAnimation:animation forKey:@"animation"];
          }
 
-2.
+## 方法三：UIViewAnimation
+我们一般使用的动画效果都是在UIView层面：
+
+    [UIView beginAnimations:nil context:context];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:duration];
+    ...
+    [UIView commitAnimations];
+
+这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果；
+它还有专门的两个转场动画方法：
+
+    + (void)transitionWithView:(UIView *)view duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0);
+
+    + (void)transitionFromView:(UIView *)fromView toView:(UIView *)toView duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0); // toView added to fromView.superview, fromView removed from its superview
+
+###示例1:在容器view中使用自定义动画
+
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    [UIView beginAnimations:nil context:context];
+    [UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+    [UIView setAnimationDuration:kDuration];
+    NSInteger tag = 105 + rand()%4;
+    switch (tag) {
+        case 105:
+            [UIView setAnimationTransition:UIViewAnimationTransitionCurlDown forView:self.view cache:YES];
+            break;
+        case 106:
+            [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp forView:self.view cache:YES];
+            break;
+        case 107:
+            [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.view cache:YES];
+            break;
+        case 108:
+            [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.view cache:YES];
+            break;
+        default:
+            break;
+    }
+    
+    //greenView和blueView是在容器view--self.view中的两个子view
+    NSUInteger green = [[self.view subviews] indexOfObject:greenView];
+    NSUInteger blue = [[self.view subviews] indexOfObject:blueView];
+    [self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
+    
+    [UIView setAnimationDelegate:self];
+    // 动画完毕后调用某个方法
+    //[UIView setAnimationDidStopSelector:@selector(animationFinished:)];
+    [UIView commitAnimations];
+###示例2:
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -134,92 +183,138 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
 <p>CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
 主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小心一些。</p>
 
-<ol>
-<li><p>示例1：使用type和subType作layer动画  </p>
+<h3 id="typesubtypelayer">示例：使用type和subType作layer动画</h3>
 
-<pre><code>- (IBAction)buttonPressed1:(id)sender {
-UIButton *button = (UIButton *)sender;
-NSInteger tag = button.tag;
+<pre><code>    - (IBAction)buttonPressed1:(id)sender {
+    UIButton *button = (UIButton *)sender;
+    NSInteger tag = button.tag;
 
+    CATransition *animation = [CATransition animation];
+    animation.delegate = self;
+    animation.duration = .45;
+    animation.timingFunction = UIViewAnimationCurveEaseInOut;
 
-CATransition *animation = [CATransition animation];
-animation.delegate = self;
-animation.duration = .45;
-animation.timingFunction = UIViewAnimationCurveEaseInOut;
+    switch (tag) {
+    case 101:
+        animation.type = kCATransitionFade;
+        break;
+    case 102:
+        animation.type = kCATransitionPush;
+         break;
+    case 103:
+        animation.type = kCATransitionReveal;
+        break;
+    case 104:
+         animation.type = kCATransitionMoveIn;
+        break;
+    case 201:
+        animation.type = @"cube";
+        break;
+    case 202:
+        animation.type = @"suckEffect";
+        break;
+    case 203:
+        animation.type = @"oglFlip";
+        break;
+    case 204:
+        animation.type = @"rippleEffect";
+        break;
+    case 205:
+        animation.type = @"pageCurl";
+        break;
+    case 206:
+        animation.type = @"pageUnCurl";
+        break;
+    case 207:
+        animation.type = @"cameraIrisHollowOpen";
+        break;
+    case 208:
+        animation.type = @"cameraIrisHollowClose";
+        break;
+    default:
+        break;
+    }
 
+    NSInteger typeID = rand()%4;    
 
+    switch (typeID) {
+    case 0:
+        animation.subtype = kCATransitionFromLeft;
+        break;
+    case 1:
+        animation.subtype = kCATransitionFromBottom;
+        break;
+    case 2:
+        animation.subtype = kCATransitionFromRight;
+        break;
+    case 3:
+        animation.subtype = kCATransitionFromTop;
+        break;
+    default:
+        break;
+    }
+
+    [self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
+
+    [[self.view layer] addAnimation:animation forKey:@"animation"];
+     }
+</code></pre>
+
+<h2 id="uiviewanimation">方法三：UIViewAnimation</h2>
+
+<p>我们一般使用的动画效果都是在UIView层面：</p>
+
+<pre><code>[UIView beginAnimations:nil context:context];
+[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+[UIView setAnimationDuration:duration];
+...
+[UIView commitAnimations];
+</code></pre>
+
+<p>这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果；
+它还有专门的两个转场动画方法：</p>
+
+<pre><code>+ (void)transitionWithView:(UIView *)view duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0);
+
++ (void)transitionFromView:(UIView *)fromView toView:(UIView *)toView duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0); // toView added to fromView.superview, fromView removed from its superview
+</code></pre>
+
+<h3 id="1view">示例1:在容器view中使用自定义动画</h3>
+
+<pre><code>CGContextRef context = UIGraphicsGetCurrentContext();
+[UIView beginAnimations:nil context:context];
+[UIView setAnimationCurve:UIViewAnimationCurveEaseInOut];
+[UIView setAnimationDuration:kDuration];
+NSInteger tag = 105 + rand()%4;
 switch (tag) {
-case 101:
-    animation.type = kCATransitionFade;
-    break;
-case 102:
-    animation.type = kCATransitionPush;
-     break;
-case 103:
-    animation.type = kCATransitionReveal;
-    break;
-case 104:
-     animation.type = kCATransitionMoveIn;
-    break;
-case 201:
-    animation.type = @"cube";
-    break;
-case 202:
-    animation.type = @"suckEffect";
-    break;
-case 203:
-    animation.type = @"oglFlip";
-    break;
-case 204:
-    animation.type = @"rippleEffect";
-    break;
-case 205:
-    animation.type = @"pageCurl";
-    break;
-case 206:
-    animation.type = @"pageUnCurl";
-    break;
-case 207:
-    animation.type = @"cameraIrisHollowOpen";
-    break;
-case 208:
-    animation.type = @"cameraIrisHollowClose";
-    break;
-default:
-    break;
+    case 105:
+        [UIView setAnimationTransition:UIViewAnimationTransitionCurlDown forView:self.view cache:YES];
+        break;
+    case 106:
+        [UIView setAnimationTransition:UIViewAnimationTransitionCurlUp forView:self.view cache:YES];
+        break;
+    case 107:
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromLeft forView:self.view cache:YES];
+        break;
+    case 108:
+        [UIView setAnimationTransition:UIViewAnimationTransitionFlipFromRight forView:self.view cache:YES];
+        break;
+    default:
+        break;
 }
 
+//greenView和blueView是在容器view--self.view中的两个子view
+NSUInteger green = [[self.view subviews] indexOfObject:greenView];
+NSUInteger blue = [[self.view subviews] indexOfObject:blueView];
+[self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
 
-NSInteger typeID = rand()%4;    
+[UIView setAnimationDelegate:self];
+// 动画完毕后调用某个方法
+//[UIView setAnimationDidStopSelector:@selector(animationFinished:)];
+[UIView commitAnimations];
+</code></pre>
 
-
-switch (typeID) {
-case 0:
-    animation.subtype = kCATransitionFromLeft;
-    break;
-case 1:
-    animation.subtype = kCATransitionFromBottom;
-    break;
-case 2:
-    animation.subtype = kCATransitionFromRight;
-    break;
-case 3:
-    animation.subtype = kCATransitionFromTop;
-    break;
-default:
-    break;
-}
-
-
-[self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
-
-
-[[self.view layer] addAnimation:animation forKey:@"animation"];
- }
-</code></pre></li>
-</ol>
-
-<p>2.</p>
+<h3 id="2">示例2:</h3>
 <!-- content end -->
 </div>
 <br>
