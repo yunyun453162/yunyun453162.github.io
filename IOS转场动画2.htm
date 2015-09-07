@@ -87,9 +87,9 @@
             break;
     }
 
-   NSInteger typeID = rand()%4;    
+    NSInteger typeID = rand()%4;    
 
-    switch (self.typeID) {
+    switch (typeID) {
         case 0:
             animation.subtype = kCATransitionFromLeft;
             break;
@@ -106,9 +106,7 @@
             break;
     }
     
-    NSUInteger green = [[self.view subviews] indexOfObject:self.greenView];
-    NSUInteger blue = [[self.view subviews] indexOfObject:self.blueView];
-    [self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
+    [self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
     
     [[self.view layer] addAnimation:animation forKey:@"animation"];
      }
@@ -176,11 +174,10 @@ switch (tag) {
     default:
         break;
 }
-</code></pre>
 
-<p>NSInteger typeID = rand()%4;    </p>
+NSInteger typeID = rand()%4;    
 
-<pre><code>switch (self.typeID) {
+switch (typeID) {
     case 0:
         animation.subtype = kCATransitionFromLeft;
         break;
@@ -197,9 +194,7 @@ switch (tag) {
         break;
 }
 
-NSUInteger green = [[self.view subviews] indexOfObject:self.greenView];
-NSUInteger blue = [[self.view subviews] indexOfObject:self.blueView];
-[self.view exchangeSubviewAtIndex:green withSubviewAtIndex:blue];
+[self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
 
 [[self.view layer] addAnimation:animation forKey:@"animation"];
  }
