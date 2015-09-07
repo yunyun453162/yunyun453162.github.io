@@ -112,7 +112,20 @@ NSThread公开的头文件比较简单，各个属性的作用也非常明显，
 
 1. 可以通过类方法隐式创建一个直接开始执行线程
 2. 可以跳转到其它线程中去执行方法
-3. 线程一启动就只在`运行`(running)、`就绪`(ready)、`阻塞`(blocked)三个状态之一,详细：[线程的五大状态](http://blog.csdn.net/peter_teng/article/details/10197785)
+3. 线程一启动就只在`运行`(running)、`就绪`(ready)、`阻塞`(blocked)三个状态之一,详细：[线程的五大状态](http://blog.csdn.net/peter_teng/article/details/10197785)；
+
+我们来看一个实例化方法：  
+
+    NSThread* myThread = [[NSThread alloc] initWithTarget:self  
+                                        selector:@selector(doSomething:)  
+                                        object:nil];  
+    [myThread start];  
+
+手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。  
+###参数说明：  
+selector ：线程执行的方法，这个selector只能有一个参数，而且不能有返回值。
+target  ：selector消息发送的对象。
+argument:传输给target的参数，也可以是nil。
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -210,8 +223,24 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 <ol>
 <li>可以通过类方法隐式创建一个直接开始执行线程</li>
 <li>可以跳转到其它线程中去执行方法</li>
-<li>线程一启动就只在<code>运行</code>(running)、<code>就绪</code>(ready)、<code>阻塞</code>(blocked)三个状态之一,详细：<a href="http://blog.csdn.net/peter_teng/article/details/10197785">线程的五大状态</a></li>
+<li>线程一启动就只在<code>运行</code>(running)、<code>就绪</code>(ready)、<code>阻塞</code>(blocked)三个状态之一,详细：<a href="http://blog.csdn.net/peter_teng/article/details/10197785">线程的五大状态</a>；</li>
 </ol>
+
+<p>我们来看一个实例化方法：  </p>
+
+<pre><code>NSThread* myThread = [[NSThread alloc] initWithTarget:self  
+                                    selector:@selector(doSomething:)  
+                                    object:nil];  
+[myThread start];  
+</code></pre>
+
+<p>手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。  </p>
+
+<h3 id="">参数说明：</h3>
+
+<p>selector ：线程执行的方法，这个selector只能有一个参数，而且不能有返回值。
+target  ：selector消息发送的对象。
+argument:传输给target的参数，也可以是nil。</p>
 <!-- content end -->
 </div>
 <br>
