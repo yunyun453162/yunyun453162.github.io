@@ -175,6 +175,10 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
     } completion:^(BOOL finished) {
         
     }];
+
+##Storyboard
+实现方式就是继承UIStoryboardSegue类，然后重写Perform方法,然后在Storyboard上将类设置为自定义的类。
+这里有一个storyboard动画的例子[自定义一个UIStoryboardSegue并使用](http://www.xcoder.cn/?p=494)
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -335,6 +339,11 @@ NSUInteger blue = [[self.view subviews] indexOfObject:blueView];
 
 }];
 </code></pre>
+
+<h2 id="storyboard">Storyboard</h2>
+
+<p>实现方式就是继承UIStoryboardSegue类，然后重写Perform方法,然后在Storyboard上将类设置为自定义的类。
+这里有一个storyboard动画的例子<a href="http://www.xcoder.cn/?p=494">自定义一个UIStoryboardSegue并使用</a></p>
 <!-- content end -->
 </div>
 <br>
