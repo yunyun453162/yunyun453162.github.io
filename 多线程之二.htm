@@ -56,7 +56,7 @@ IOS线程默认是没有RunLoop的，一个线程一次只能执行一个任务�
 
 
 
-###附：我拷贝过来了作者整理好的内部原理概要代码：
+###附：我拷贝过来了[深入理解RunLoop](http://www.cocoachina.com/ios/20150601/11970.html)作者整理好的内部原理概要代码：
 
     /// 用DefaultMode启动
     void CFRunLoopRun(void) {
@@ -205,7 +205,7 @@ CFRunLoopRef 的代码是开源的，你可以在这里 <a href="http://opensour
 [runLoop run];
 </code></pre>
 
-<h3 id="">附：我拷贝过来了作者整理好的内部原理概要代码：</h3>
+<h3 id="runloophttpwwwcocoachinacomios2015060111970html">附：我拷贝过来了<a href="http://www.cocoachina.com/ios/20150601/11970.html">深入理解RunLoop</a>作者整理好的内部原理概要代码：</h3>
 
 <pre><code>/// 用DefaultMode启动
 void CFRunLoopRun(void) {
