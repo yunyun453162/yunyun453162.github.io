@@ -36,6 +36,8 @@
 
 
 ## 方法二：使用CATransition
+CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
+主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小收一些。
 
     - (IBAction)buttonPressed1:(id)sender {
     UIButton *button = (UIButton *)sender;
@@ -124,6 +126,9 @@
 <p>它最主要的工作就是自定了一个个人的动画上下文，这样子我们就可以利用上节所写出来的动画控制器和动画效果代码，而且不用做什么改动,还有良好的扩展性。</p>
 
 <h2 id="catransition">方法二：使用CATransition</h2>
+
+<p>CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
+主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小收一些。</p>
 
 <pre><code>- (IBAction)buttonPressed1:(id)sender {
 UIButton *button = (UIButton *)sender;
