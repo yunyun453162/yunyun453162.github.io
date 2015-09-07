@@ -25,12 +25,51 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
+RunLoop是IOS开发中较为底层的一个概念，我们通常情况下都用不到，顾名思义，它就是一个运行在线程中的循环。它和我们以前见过状态机很类似。
+
+    while(1){
+    
+        //接收事件
+        //接收输入
+        //处理事件
+        ....
+       sleep(1);
+       if(condition)
+           break;    
+    }
+
+我们app的主线程有就一个类似的循环,当condition不满足时，它就一直在运行或等待中。RunLoop就是一个管理这个状态机的对象，让线程在没有处理消息时休眠以避免资源占用、在有消息到来时立刻被唤醒并执行任务，直到线程loop终止或线程退出。
+
+
+线程创建和销毁都是要消耗系统资源的，在通常情况下我们可以不考虑这个，但是在高并发的情况下就不能不考虑了性能问题了，这就有了线程池的概念。而为了复用线程，我们就需要线程在执行完一个任务后不马上退出，而是休眠等待下一个任务到来，这里RunLoop就有了用武之地。
+
+OSX/iOS 系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。
+CFRunLoopRef 的代码是开源的，你可以在这里 http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz 下载到整个 CoreFoundation 的源码
 
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>RunLoop是IOS开发中较为底层的一个概念，我们通常情况下都用不到，顾名思义，它就是一个运行在线程中的循环。它和我们以前见过状态机很类似。</p>
 
+<pre><code>while(1){
+
+    //接收事件
+    //接收输入
+    //处理事件
+    ....
+   sleep(1);
+   if(condition)
+       break;    
+}
+</code></pre>
+
+<p>我们app的主线程有就一个类似的循环,当condition不满足时，它就一直在运行或等待中。RunLoop就是一个管理这个状态机的对象，让线程在没有处理消息时休眠以避免资源占用、在有消息到来时立刻被唤醒并执行任务，直到线程loop终止或线程退出。</p>
+
+<p>线程创建和销毁都是要消耗系统资源的，在通常情况下我们可以不考虑这个，但是在高并发的情况下就不能不考虑了性能问题了，这就有了线程池的概念。而为了复用线程，我们就需要线程在执行完一个任务后不马上退出，而是休眠等待下一个任务到来，这里RunLoop就有了用武之地。</p>
+
+<p>OSX/iOS 系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。
+CFRunLoopRef 的代码是开源的，你可以在这里 http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz 下载到整个 CoreFoundation 的源码</p>
 <!-- content end -->
 </div>
 <br>
