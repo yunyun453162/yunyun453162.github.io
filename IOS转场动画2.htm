@@ -115,6 +115,8 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
         [[self.view layer] addAnimation:animation forKey:@"animation"];
          }
 
+这里有一个更详细的操作文章：[iOS开发UI篇—核心动画(转场动画和组动画)](http://www.cnblogs.com/wendingding/p/3801454.html)
+
 ## 方法三：UIViewAnimation
 我们一般使用的动画效果都是在UIView层面：
 
@@ -124,7 +126,7 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
     ...
     [UIView commitAnimations];
 
-这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果；
+这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果。   
 它还有专门的两个转场动画方法：
 
     + (void)transitionWithView:(UIView *)view duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0);
@@ -164,7 +166,15 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
     // 动画完毕后调用某个方法
     //[UIView setAnimationDidStopSelector:@selector(animationFinished:)];
     [UIView commitAnimations];
-###示例2:
+
+###示例2:使用UIView类方法提供的方式
+
+    [UIView transitionWithView:self.navigationController.view duration:0.5 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+        MyViewController *my=[[MyViewController alloc] init];
+        [self.navigationController pushViewController:my animated:NO];
+    } completion:^(BOOL finished) {
+        
+    }];
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -260,6 +270,8 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
      }
 </code></pre>
 
+<p>这里有一个更详细的操作文章：<a href="http://www.cnblogs.com/wendingding/p/3801454.html">iOS开发UI篇—核心动画(转场动画和组动画)</a></p>
+
 <h2 id="uiviewanimation">方法三：UIViewAnimation</h2>
 
 <p>我们一般使用的动画效果都是在UIView层面：</p>
@@ -271,7 +283,7 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
 [UIView commitAnimations];
 </code></pre>
 
-<p>这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果；
+<p>这个动画既可以用在容器view自身，也可以用在它的子view上，让我们可以定义出不同的动画效果。 <br>
 它还有专门的两个转场动画方法：</p>
 
 <pre><code>+ (void)transitionWithView:(UIView *)view duration:(NSTimeInterval)duration options:(UIViewAnimationOptions)options animations:(void (^)(void))animations completion:(void (^)(BOOL finished))completion NS_AVAILABLE_IOS(4_0);
@@ -314,7 +326,15 @@ NSUInteger blue = [[self.view subviews] indexOfObject:blueView];
 [UIView commitAnimations];
 </code></pre>
 
-<h3 id="2">示例2:</h3>
+<h3 id="2uiview">示例2:使用UIView类方法提供的方式</h3>
+
+<pre><code>[UIView transitionWithView:self.navigationController.view duration:0.5 options:UIViewAnimationOptionTransitionCurlUp animations:^{
+    MyViewController *my=[[MyViewController alloc] init];
+    [self.navigationController pushViewController:my animated:NO];
+} completion:^(BOOL finished) {
+
+}];
+</code></pre>
 <!-- content end -->
 </div>
 <br>
