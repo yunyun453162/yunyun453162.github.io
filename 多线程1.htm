@@ -133,9 +133,40 @@ argument:传输给target的参数，也可以是nil。
 
 NSThread 有两个方式解决这个问题：  
 
-1.  互斥锁，一个线程获取到资源后马上锁住，其它线程就要等它完成后才能获取。
+1.  互斥锁(NSLock)，一个线程获取到资源后马上锁住，其它线程就要等它完成后才能获取。
 2.  @synchronized 它其实和lock是一样的，只是编译器帮我们优化了代码，不用自己加解锁。
-3. 条件锁 条件锁会阻塞直到收到条件满足信号。
+3. 条件锁(NSCondition) 条件锁会阻塞当前线程直到收到条件满足信号。
+
+下面看个例子  
+
+
+    -(void)run3{  
+        while (YES) {  
+            [ticketsCondition lock];  
+            [NSThread sleepForTimeInterval:3];  
+            [ticketsCondition signal];  
+            [ticketsCondition unlock];  
+        }  
+    }  
+  
+    - (void)run{  
+        while (TRUE) {  
+            // 上锁  
+            [ticketsCondition lock];  
+            [ticketsCondition wait];  
+            [theLock lock];  
+            if(tickets >= 0){  
+                [NSThread sleepForTimeInterval:0.09];  
+                count = 100 - tickets;  
+                NSLog(@"当前票数是:%d,售出:%d,线程名:%@",tickets,count,[[NSThread currentThread] name]);  
+                tickets--;  
+            }else{  
+                break;  
+            }  
+            [theLock unlock];  
+            [ticketsCondition unlock];  
+        }  
+    }  
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -259,10 +290,41 @@ argument:传输给target的参数，也可以是nil。</p>
 <p>NSThread 有两个方式解决这个问题：  </p>
 
 <ol>
-<li>互斥锁，一个线程获取到资源后马上锁住，其它线程就要等它完成后才能获取。</li>
+<li>互斥锁(NSLock)，一个线程获取到资源后马上锁住，其它线程就要等它完成后才能获取。</li>
 <li>@synchronized 它其实和lock是一样的，只是编译器帮我们优化了代码，不用自己加解锁。</li>
-<li>条件锁 条件锁会阻塞直到收到条件满足信号。</li>
+<li>条件锁(NSCondition) 条件锁会阻塞当前线程直到收到条件满足信号。</li>
 </ol>
+
+<p>下面看个例子  </p>
+
+<pre><code>-(void)run3{  
+    while (YES) {  
+        [ticketsCondition lock];  
+        [NSThread sleepForTimeInterval:3];  
+        [ticketsCondition signal];  
+        [ticketsCondition unlock];  
+    }  
+}  
+
+- (void)run{  
+    while (TRUE) {  
+        // 上锁  
+        [ticketsCondition lock];  
+        [ticketsCondition wait];  
+        [theLock lock];  
+        if(tickets &gt;= 0){  
+            [NSThread sleepForTimeInterval:0.09];  
+            count = 100 - tickets;  
+            NSLog(@"当前票数是:%d,售出:%d,线程名:%@",tickets,count,[[NSThread currentThread] name]);  
+            tickets--;  
+        }else{  
+            break;  
+        }  
+        [theLock unlock];  
+        [ticketsCondition unlock];  
+    }  
+}  
+</code></pre>
 <!-- content end -->
 </div>
 <br>
