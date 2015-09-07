@@ -47,7 +47,12 @@ OSX/iOS 系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef�
 CFRunLoopRef 的代码是开源的，你可以在这里 [http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz](http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz) 下载到整个 CoreFoundation 的源码。  
 而关于RunLoop更深入的分析，请看这里：[深入理解RunLoop](http://www.cocoachina.com/ios/20150601/11970.html)
 
+IOS线程默认是没有RunLoop的，一个线程一次只能执行一个任务，执行完成后线程就会退出。苹果不允许直接创建 RunLoop，它只提供了两个自动获取的函数：CFRunLoopGetMain() 和 CFRunLoopGetCurrent()，其实就是在这里系统创建了一个然后用字典存起来了。  
+为一个线程加入RunLoop:  
 
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    //[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+    [runLoop run];
 
 
 
@@ -191,6 +196,14 @@ CFRunLoopRef 的代码是开源的，你可以在这里 [http://opensource.apple
 <p>OSX/iOS 系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。 <br>
 CFRunLoopRef 的代码是开源的，你可以在这里 <a href="http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz">http://opensource.apple.com/tarballs/CF/CF-855.17.tar.gz</a> 下载到整个 CoreFoundation 的源码。 <br>
 而关于RunLoop更深入的分析，请看这里：<a href="http://www.cocoachina.com/ios/20150601/11970.html">深入理解RunLoop</a></p>
+
+<p>IOS线程默认是没有RunLoop的，一个线程一次只能执行一个任务，执行完成后线程就会退出。苹果不允许直接创建 RunLoop，它只提供了两个自动获取的函数：CFRunLoopGetMain() 和 CFRunLoopGetCurrent()，其实就是在这里系统创建了一个然后用字典存起来了。 <br>
+为一个线程加入RunLoop:  </p>
+
+<pre><code>NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+//[runLoop addPort:[NSPort port] forMode:NSDefaultRunLoopMode];
+[runLoop run];
+</code></pre>
 
 <h3 id="">附：我拷贝过来了作者整理好的内部原理概要代码：</h3>
 
