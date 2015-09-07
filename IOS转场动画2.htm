@@ -39,27 +39,29 @@
 CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
 主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小收一些。
 
-    - (IBAction)buttonPressed1:(id)sender {
-    UIButton *button = (UIButton *)sender;
-    NSInteger tag = button.tag;
+1. 示例1：使用type和subType作layer动画  
+
+        - (IBAction)buttonPressed1:(id)sender {
+        UIButton *button = (UIButton *)sender;
+        NSInteger tag = button.tag;
     
-    CATransition *animation = [CATransition animation];
-    animation.delegate = self;
-    animation.duration = .45;
-    animation.timingFunction = UIViewAnimationCurveEaseInOut;
+        CATransition *animation = [CATransition animation];
+        animation.delegate = self;
+        animation.duration = .45;
+        animation.timingFunction = UIViewAnimationCurveEaseInOut;
     
-    switch (tag) {
+        switch (tag) {
         case 101:
             animation.type = kCATransitionFade;
             break;
         case 102:
             animation.type = kCATransitionPush;
-            break;
+             break;
         case 103:
             animation.type = kCATransitionReveal;
             break;
         case 104:
-            animation.type = kCATransitionMoveIn;
+             animation.type = kCATransitionMoveIn;
             break;
         case 201:
             animation.type = @"cube";
@@ -87,11 +89,11 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
             break;
         default:
             break;
-    }
+        }
 
-    NSInteger typeID = rand()%4;    
+        NSInteger typeID = rand()%4;    
 
-    switch (typeID) {
+        switch (typeID) {
         case 0:
             animation.subtype = kCATransitionFromLeft;
             break;
@@ -106,12 +108,14 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
             break;
         default:
             break;
-    }
+        }
     
-    [self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
+        [self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
     
-    [[self.view layer] addAnimation:animation forKey:@"animation"];
-     }
+        [[self.view layer] addAnimation:animation forKey:@"animation"];
+         }
+
+2. 
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -130,80 +134,92 @@ CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation�
 <p>CATransition 是一个layer 层面上的动画类，它是继承于CAAnimation，封装了一些常用的简单动作，并且保留了扩展性。
 主要区别在于它的type和subType属性，一个定义了动画效果，另一个则定义了动画方向，不过它的部分动画效果还是私有的，使用起来要小收一些。</p>
 
+<ol>
+<li><p>示例1：使用type和subType作layer动画  </p>
+
 <pre><code>- (IBAction)buttonPressed1:(id)sender {
 UIButton *button = (UIButton *)sender;
 NSInteger tag = button.tag;
+
 
 CATransition *animation = [CATransition animation];
 animation.delegate = self;
 animation.duration = .45;
 animation.timingFunction = UIViewAnimationCurveEaseInOut;
 
+
 switch (tag) {
-    case 101:
-        animation.type = kCATransitionFade;
-        break;
-    case 102:
-        animation.type = kCATransitionPush;
-        break;
-    case 103:
-        animation.type = kCATransitionReveal;
-        break;
-    case 104:
-        animation.type = kCATransitionMoveIn;
-        break;
-    case 201:
-        animation.type = @"cube";
-        break;
-    case 202:
-        animation.type = @"suckEffect";
-        break;
-    case 203:
-        animation.type = @"oglFlip";
-        break;
-    case 204:
-        animation.type = @"rippleEffect";
-        break;
-    case 205:
-        animation.type = @"pageCurl";
-        break;
-    case 206:
-        animation.type = @"pageUnCurl";
-        break;
-    case 207:
-        animation.type = @"cameraIrisHollowOpen";
-        break;
-    case 208:
-        animation.type = @"cameraIrisHollowClose";
-        break;
-    default:
-        break;
+case 101:
+    animation.type = kCATransitionFade;
+    break;
+case 102:
+    animation.type = kCATransitionPush;
+     break;
+case 103:
+    animation.type = kCATransitionReveal;
+    break;
+case 104:
+     animation.type = kCATransitionMoveIn;
+    break;
+case 201:
+    animation.type = @"cube";
+    break;
+case 202:
+    animation.type = @"suckEffect";
+    break;
+case 203:
+    animation.type = @"oglFlip";
+    break;
+case 204:
+    animation.type = @"rippleEffect";
+    break;
+case 205:
+    animation.type = @"pageCurl";
+    break;
+case 206:
+    animation.type = @"pageUnCurl";
+    break;
+case 207:
+    animation.type = @"cameraIrisHollowOpen";
+    break;
+case 208:
+    animation.type = @"cameraIrisHollowClose";
+    break;
+default:
+    break;
 }
+
 
 NSInteger typeID = rand()%4;    
 
+
 switch (typeID) {
-    case 0:
-        animation.subtype = kCATransitionFromLeft;
-        break;
-    case 1:
-        animation.subtype = kCATransitionFromBottom;
-        break;
-    case 2:
-        animation.subtype = kCATransitionFromRight;
-        break;
-    case 3:
-        animation.subtype = kCATransitionFromTop;
-        break;
-    default:
-        break;
+case 0:
+    animation.subtype = kCATransitionFromLeft;
+    break;
+case 1:
+    animation.subtype = kCATransitionFromBottom;
+    break;
+case 2:
+    animation.subtype = kCATransitionFromRight;
+    break;
+case 3:
+    animation.subtype = kCATransitionFromTop;
+    break;
+default:
+    break;
 }
+
 
 [self.view exchangeSubviewAtIndex:view1Index withSubviewAtIndex:view2Index];
 
+
 [[self.view layer] addAnimation:animation forKey:@"animation"];
  }
-</code></pre>
+</code></pre></li>
+
+2. 
+</ol>
 <!-- content end -->
 </div>
 <br>
