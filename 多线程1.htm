@@ -137,8 +137,14 @@ NSThread 有两个方式解决这个问题：
 2.  @synchronized 它其实和lock是一样的，只是编译器帮我们优化了代码，不用自己加解锁。
 3. 条件锁(NSCondition) 条件锁会阻塞当前线程直到收到条件满足信号。
 
-下面看个例子  
+下面看个网上找来的例子  
 
+    /*int tickets;  
+    int count;  
+    NSThread* ticketsThreadone;  
+    NSThread* ticketsThreadtwo;  
+    NSCondition* ticketsCondition;  
+    NSLock *theLock;  */
 
     -(void)run3{  
         while (YES) {  
@@ -295,9 +301,16 @@ argument:传输给target的参数，也可以是nil。</p>
 <li>条件锁(NSCondition) 条件锁会阻塞当前线程直到收到条件满足信号。</li>
 </ol>
 
-<p>下面看个例子  </p>
+<p>下面看个网上找来的例子  </p>
 
-<pre><code>-(void)run3{  
+<pre><code>/*int tickets;  
+int count;  
+NSThread* ticketsThreadone;  
+NSThread* ticketsThreadtwo;  
+NSCondition* ticketsCondition;  
+NSLock *theLock;  */
+
+-(void)run3{  
     while (YES) {  
         [ticketsCondition lock];  
         [NSThread sleepForTimeInterval:3];  
