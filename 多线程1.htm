@@ -107,6 +107,12 @@ p_thread是一套Ｃ的接口，GCD就是基于它实现的，我们在分析GCD
     - (void)performSelectorInBackground:(SEL)aSelector withObject:(id)arg NS_AVAILABLE(10_5, 2_0);
 
     @end
+
+NSThread公开的头文件比较简单，各个属性的作用也非常明显，看完上面的代码我们可以了解到：
+
+1. 可以通过类方法隐式创建一个直接开始执行线程
+2. 可以跳转到其它线程中去执行方法
+3. 线程一启动就只在`运行`(running)、`就绪`(ready)、`阻塞`(blocked)三个状态之一,详细：[线程的五大状态](http://blog.csdn.net/peter_teng/article/details/10197785)
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -198,6 +204,14 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 
 @end
 </code></pre>
+
+<p>NSThread公开的头文件比较简单，各个属性的作用也非常明显，看完上面的代码我们可以了解到：</p>
+
+<ol>
+<li>可以通过类方法隐式创建一个直接开始执行线程</li>
+<li>可以跳转到其它线程中去执行方法</li>
+<li>线程一启动就只在<code>运行</code>(running)、<code>就绪</code>(ready)、<code>阻塞</code>(blocked)三个状态之一,详细：<a href="http://blog.csdn.net/peter_teng/article/details/10197785">线程的五大状态</a></li>
+</ol>
 <!-- content end -->
 </div>
 <br>
