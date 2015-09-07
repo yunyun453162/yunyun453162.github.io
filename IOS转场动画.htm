@@ -55,6 +55,8 @@ IOS的视图组织呈现方式主要有三种:UITabbarViewController,UINavigatio
     //这个是交互式转场动画代理
     - (void)startInteractiveTransition:(id <UIViewControllerContextTransitioning>)transitionContext;
 
+![网上的一个简单的归纳图片](http://cdn.cocimg.com/cms/uploads/allimg/131224/4673_131224115044_1.jpg)
+
 ###2. UIViewControllerAnimatedTransitioning
 实现该协议的类可以称之为动画控制器。  
 在视图切换时实现UIViewControllerTransitioningDelegate的类中传给UIKit，UIKit会用它来控制动画的进行。
@@ -212,7 +214,6 @@ UITabBarControllerDelegate，UINavigationControllerDelegate和UIViewControllerTr
 完成上述步骤我们就自定义实现了一个navigationController的一个pop动画。如果不同的页面有很多不同动画效果的话我们可以建一个管理类来做nav代理，根据fromviewcontroller和toViewController来分别传入不同的动画控制器。
 
 整个定制的过程非常简单，tabbarcontroller和模态视图的步骤也是类似的，这里就不一一列举了。
-![网上的一个简单的归纳图片](http://cdn.cocimg.com/cms/uploads/allimg/131224/4673_131224115044_1.jpg)
 
 
 <!-- markdown end -->
@@ -249,6 +250,8 @@ UITabBarControllerDelegate，UINavigationControllerDelegate和UIViewControllerTr
 //这个是交互式转场动画代理
 - (void)startInteractiveTransition:(id &lt;UIViewControllerContextTransitioning&gt;)transitionContext;
 </code></pre>
+
+<p><img src="http://cdn.cocimg.com/cms/uploads/allimg/131224/4673_131224115044_1.jpg" alt="网上的一个简单的归纳图片" title=""></p>
 
 <h3 id="2uiviewcontrolleranimatedtransitioning">2. UIViewControllerAnimatedTransitioning</h3>
 
@@ -430,8 +433,7 @@ fromViewController.view.layer.transform = t;
 
 <p>完成上述步骤我们就自定义实现了一个navigationController的一个pop动画。如果不同的页面有很多不同动画效果的话我们可以建一个管理类来做nav代理，根据fromviewcontroller和toViewController来分别传入不同的动画控制器。</p>
 
-<p>整个定制的过程非常简单，tabbarcontroller和模态视图的步骤也是类似的，这里就不一一列举了。
-<img src="http://cdn.cocimg.com/cms/uploads/allimg/131224/4673_131224115044_1.jpg" alt="网上的一个简单的归纳图片" title=""></p>
+<p>整个定制的过程非常简单，tabbarcontroller和模态视图的步骤也是类似的，这里就不一一列举了。</p>
 <!-- content end -->
 </div>
 <br>
