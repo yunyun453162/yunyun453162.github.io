@@ -51,16 +51,16 @@ p_thread是一套Ｃ的接口，GCD就是基于它实现的，我们在分析GCD
         uint8_t _bytes[44];
     }
 
-    + (NSThread *)currentThread;
-    + (void)detachNewThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument;
+    + (NSThread *)currentThread; //获取当前线程
+    + (void)detachNewThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument;//创建一个新线程，并启动
 
-    + (BOOL)isMultiThreaded;
+    + (BOOL)isMultiThreaded; //判断进程当前是否使用多线程
     @property (readonly, retain) NSMutableDictionary *threadDictionary；
-    + (void)sleepUntilDate:(NSDate *)date;
-    + (void)sleepForTimeInterval:(NSTimeInterval)ti;
-    + (void)exit;
-    + (double)threadPriority;
-    + (BOOL)setThreadPriority:(double)p;
+    + (void)sleepUntilDate:(NSDate *)date;  //阻塞直到某个时间
+    + (void)sleepForTimeInterval:(NSTimeInterval)ti;//阻塞多少s
+    + (void)exit;  //退出线程
+    + (double)threadPriority;//获取优先级
+    + (BOOL)setThreadPriority:(double)p;  //设置优先级
 
     @property double threadPriority NS_AVAILABLE(10_6, 4_0); // To be deprecated; use qualityOfService below
     //这是一个新属性，和上面的线程优先级是一样的作用
@@ -112,9 +112,9 @@ NSThread公开的头文件比较简单，各个属性的作用也非常明显，
 
 1. 可以通过类方法隐式创建一个直接开始执行线程
 2. 可以跳转到其它线程中去执行方法
-3. 线程一启动就只在`运行`(running)、`就绪`(ready)、`阻塞`(blocked)三个状态之一,详细：[线程的五大状态](http://blog.csdn.net/peter_teng/article/details/10197785)；
+3. 线程一启动就只在`运行`(running)、`就绪`(ready)、`阻塞`(blocked)三个状态之一,而cancel和finish，excuting则只是改变线程当前运行状态，不会真正结束线程。详细：[线程的五大状态](http://blog.csdn.net/peter_teng/article/details/10197785)；
 
-我们来看一个实例化方法：  
+我们来看一个实例化使用方法：  
 
     NSThread* myThread = [[NSThread alloc] initWithTarget:self  
                                         selector:@selector(doSomething:)  
@@ -126,6 +126,9 @@ NSThread公开的头文件比较简单，各个属性的作用也非常明显，
 selector ：线程执行的方法，这个selector只能有一个参数，而且不能有返回值。
 target  ：selector消息发送的对象。
 argument:传输给target的参数，也可以是nil。
+
+###资源竟争
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -160,16 +163,16 @@ p</em>thread是一套Ｃ的接口，GCD就是基于它实现的，我们在分�
     uint8_t _bytes[44];
 }
 
-+ (NSThread *)currentThread;
-+ (void)detachNewThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument;
++ (NSThread *)currentThread; //获取当前线程
++ (void)detachNewThreadSelector:(SEL)selector toTarget:(id)target withObject:(id)argument;//创建一个新线程，并启动
 
-+ (BOOL)isMultiThreaded;
++ (BOOL)isMultiThreaded; //判断进程当前是否使用多线程
 @property (readonly, retain) NSMutableDictionary *threadDictionary；
-+ (void)sleepUntilDate:(NSDate *)date;
-+ (void)sleepForTimeInterval:(NSTimeInterval)ti;
-+ (void)exit;
-+ (double)threadPriority;
-+ (BOOL)setThreadPriority:(double)p;
++ (void)sleepUntilDate:(NSDate *)date;  //阻塞直到某个时间
++ (void)sleepForTimeInterval:(NSTimeInterval)ti;//阻塞多少s
++ (void)exit;  //退出线程
++ (double)threadPriority;//获取优先级
++ (BOOL)setThreadPriority:(double)p;  //设置优先级
 
 @property double threadPriority NS_AVAILABLE(10_6, 4_0); // To be deprecated; use qualityOfService below
 //这是一个新属性，和上面的线程优先级是一样的作用
@@ -223,10 +226,10 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 <ol>
 <li>可以通过类方法隐式创建一个直接开始执行线程</li>
 <li>可以跳转到其它线程中去执行方法</li>
-<li>线程一启动就只在<code>运行</code>(running)、<code>就绪</code>(ready)、<code>阻塞</code>(blocked)三个状态之一,详细：<a href="http://blog.csdn.net/peter_teng/article/details/10197785">线程的五大状态</a>；</li>
+<li>线程一启动就只在<code>运行</code>(running)、<code>就绪</code>(ready)、<code>阻塞</code>(blocked)三个状态之一,而cancel和finish，excuting则只是改变线程当前运行状态，不会真正结束线程。详细：<a href="http://blog.csdn.net/peter_teng/article/details/10197785">线程的五大状态</a>；</li>
 </ol>
 
-<p>我们来看一个实例化方法：  </p>
+<p>我们来看一个实例化使用方法：  </p>
 
 <pre><code>NSThread* myThread = [[NSThread alloc] initWithTarget:self  
                                     selector:@selector(doSomething:)  
@@ -241,6 +244,8 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 <p>selector ：线程执行的方法，这个selector只能有一个参数，而且不能有返回值。
 target  ：selector消息发送的对象。
 argument:传输给target的参数，也可以是nil。</p>
+
+<h3 id="">资源竟争</h3>
 <!-- content end -->
 </div>
 <br>
