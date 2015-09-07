@@ -121,7 +121,8 @@ NSThread公开的头文件比较简单，各个属性的作用也非常明显，
                                         object:nil];  
     [myThread start];  
 
-手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。  
+手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。一般来说，一个线程启动后执行完指定的方法就会自动销毁释放资源，如果要重复多次利用一个线程，就要给线程加上一个RunLoop，退出时先停止RunLoop。
+
 ###参数说明：  
 selector ：线程执行的方法，这个selector只能有一个参数，而且不能有返回值。
 target  ：selector消息发送的对象。
@@ -237,7 +238,7 @@ FOUNDATION_EXPORT NSString * const NSThreadWillExitNotification;
 [myThread start];  
 </code></pre>
 
-<p>手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。  </p>
+<p>手动实例化必须调用start方法线程才能进入就绪状态，在start前我们可以自定义线程优先级等其它设置。一般来说，一个线程启动后执行完指定的方法就会自动销毁释放资源，如果要重复多次利用一个线程，就要给线程加上一个RunLoop，退出时先停止RunLoop。</p>
 
 <h3 id="">参数说明：</h3>
 
