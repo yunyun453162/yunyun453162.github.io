@@ -75,6 +75,74 @@ NSThread在使用时我们还要负责启动和管理，如果这样的工作比
 
 比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-> start->isReady?->Excuting->finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管`异步`调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。
 
+###并发与同步
+一般来讲，把operation加入到系统的queue中使用的是异步调用，这样我们就不用担心当阻塞当前的调用线程。  
+1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们只需要实现一个方法`main`。  
+2. 异步 异步至少要实现：  
+  - start
+  - asynchronous
+  - executing
+  - finish等方法，并且你要自己维护操作的执行状态。
+For additional information and guidance on how to define concurrent operations, see [Concurrency Programming Guide](https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091).
+3. jj
+
+<table class="graybox" border="0" cellspacing="0" cellpadding="5">
+    <caption class="tablecaption"><strong class="caption-number">Table 1</strong>Key paths for operation object states</caption>
+    <thead>
+        <tr>
+            <th scope="col" class="TableHeading_TableRow_TableCell"><p class="para">
+  Key Path
+</p></th>
+            <th scope="col" class="TableHeading_TableRow_TableCell"><p class="para">
+  Description
+</p></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isReady</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isReady</code> key path lets clients know when an operation is ready to execute. The <code class="code-voice x-api-no-link">ready</code> property contains the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code> when the operation is ready to execute now or <code class="k-constant-name code-voice Objective-C">NO</code><code class="k-constant-name code-voice Swift">false</code> if there are still unfinished operations on which it is dependent.
+</p><p class="para">
+  In most cases, you do not have to manage the state of this key path yourself. If the readiness of your operations is determined by factors other than dependent operations, however—such as by some external condition in your program—you can provide your own implementation of the <code class="code-voice x-api-no-link">ready</code> property and track your operation’s readiness yourself. It is often simpler though just to create operation objects only when your external state allows it.
+</p><p class="para">
+  In OS X v10.6 and later, if you cancel an operation while it is waiting on the completion of one or more dependent operations, those dependencies are thereafter ignored and the value of this property is updated to reflect that it is now ready to run. This behavior gives an operation queue the chance to flush cancelled operations out of its queue more quickly. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isExecuting</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isExecuting</code> key path lets clients know whether the operation is actively working on its assigned task. The <code class="code-voice x-api-no-link">executing</code> property must report the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code> if the operation is working on its task or <code class="k-constant-name code-voice Objective-C">NO</code><code class="k-constant-name code-voice Swift">false</code> if it is not. 
+</p><p class="para">
+  If you replace the <code class="code-voice x-api-no-link">start</code> method of your operation object, you must also replace the <code class="code-voice x-api-no-link">executing</code> property and generate KVO notifications when the execution state of your operation changes. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isFinished</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isFinished</code> key path lets clients know that an operation finished its task successfully or was cancelled and is exiting. An operation object does not clear a dependency until the value at the <code class="code-voice">isFinished</code> key path changes to <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code>. Similarly, an operation queue does not dequeue an operation until the <code class="code-voice x-api-no-link">finished</code> property contains the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code>. Thus, marking operations as finished is critical to keeping queues from backing up with in-progress or cancelled operations. 
+</p><p class="para">
+  If you replace the <code class="code-voice x-api-no-link">start</code> method or your operation object, you must also replace the <code class="code-voice x-api-no-link">finished</code> property and generate KVO notifications when the operation finishes executing or is cancelled. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isCancelled</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isCancelled</code> key path lets clients know that the cancellation of an operation was requested. Support for cancellation is voluntary but encouraged and your own code should not have to send KVO notifications for this key path. The handling of cancellation notices in an operation is described in more detail in <span class="x-name"><a href="#//apple_ref/doc/uid/TP40004591-RH2-SW18" data-renderer-version="2" data-id="//apple_ref/doc/uid/TP40004591-RH2-SW18">Responding to the Cancel Command</a></span>. 
+</p></td>
+        </tr>
+    </tbody>
+  </table>
+
+
 
 <!-- markdown end -->
 </div>
@@ -130,6 +198,74 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
 <p>我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过main来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入<code>@property (copy) void (^completionBlock)(void)</code>这个属性去处理。<code>不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果isReady为NO或者内存等资源不够，它会抛出一个异常</code>，而交queue,系统则会根据并发数开启一个线程池，把任务交给成功开启的可复用的线程去逐个处理。</p>
 
 <p>比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-&gt; start-&gt;isReady?-&gt;Excuting-&gt;finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管<code>异步</code>调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。</p>
+
+<h3 id="">并发与同步</h3>
+
+<p>一般来讲，把operation加入到系统的queue中使用的是异步调用，这样我们就不用担心当阻塞当前的调用线程。 <br>
+1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们只需要实现一个方法<code>main</code>。 <br>
+2. 异步 异步至少要实现： <br>
+  - start
+  - asynchronous
+  - executing
+  - finish等方法，并且你要自己维护操作的执行状态。
+For additional information and guidance on how to define concurrent operations, see <a href="https://developer.apple.com/library/prerelease/ios/documentation/General/Conceptual/ConcurrencyProgrammingGuide/Introduction/Introduction.html#//apple_ref/doc/uid/TP40008091">Concurrency Programming Guide</a>.
+3. jj</p>
+
+<table class="graybox" border="0" cellspacing="0" cellpadding="5">
+    <caption class="tablecaption"><strong class="caption-number">Table 1</strong>Key paths for operation object states</caption>
+    <thead>
+        <tr>
+            <th scope="col" class="TableHeading_TableRow_TableCell"><p class="para">
+  Key Path
+</p></th>
+            <th scope="col" class="TableHeading_TableRow_TableCell"><p class="para">
+  Description
+</p></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isReady</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isReady</code> key path lets clients know when an operation is ready to execute. The <code class="code-voice x-api-no-link">ready</code> property contains the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code> when the operation is ready to execute now or <code class="k-constant-name code-voice Objective-C">NO</code><code class="k-constant-name code-voice Swift">false</code> if there are still unfinished operations on which it is dependent.
+</p><p class="para">
+  In most cases, you do not have to manage the state of this key path yourself. If the readiness of your operations is determined by factors other than dependent operations, however—such as by some external condition in your program—you can provide your own implementation of the <code class="code-voice x-api-no-link">ready</code> property and track your operation’s readiness yourself. It is often simpler though just to create operation objects only when your external state allows it.
+</p><p class="para">
+  In OS X v10.6 and later, if you cancel an operation while it is waiting on the completion of one or more dependent operations, those dependencies are thereafter ignored and the value of this property is updated to reflect that it is now ready to run. This behavior gives an operation queue the chance to flush cancelled operations out of its queue more quickly. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isExecuting</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isExecuting</code> key path lets clients know whether the operation is actively working on its assigned task. The <code class="code-voice x-api-no-link">executing</code> property must report the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code> if the operation is working on its task or <code class="k-constant-name code-voice Objective-C">NO</code><code class="k-constant-name code-voice Swift">false</code> if it is not. 
+</p><p class="para">
+  If you replace the <code class="code-voice x-api-no-link">start</code> method of your operation object, you must also replace the <code class="code-voice x-api-no-link">executing</code> property and generate KVO notifications when the execution state of your operation changes. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isFinished</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isFinished</code> key path lets clients know that an operation finished its task successfully or was cancelled and is exiting. An operation object does not clear a dependency until the value at the <code class="code-voice">isFinished</code> key path changes to <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code>. Similarly, an operation queue does not dequeue an operation until the <code class="code-voice x-api-no-link">finished</code> property contains the value <code class="k-constant-name code-voice Objective-C">YES</code><code class="k-constant-name code-voice Swift">true</code>. Thus, marking operations as finished is critical to keeping queues from backing up with in-progress or cancelled operations. 
+</p><p class="para">
+  If you replace the <code class="code-voice x-api-no-link">start</code> method or your operation object, you must also replace the <code class="code-voice x-api-no-link">finished</code> property and generate KVO notifications when the operation finishes executing or is cancelled. 
+</p></td>
+        </tr>
+        <tr>
+            <td scope="row"><p class="para">
+  <code class="code-voice">isCancelled</code>
+</p></td>
+            <td><p class="para">
+  The <code class="code-voice">isCancelled</code> key path lets clients know that the cancellation of an operation was requested. Support for cancellation is voluntary but encouraged and your own code should not have to send KVO notifications for this key path. The handling of cancellation notices in an operation is described in more detail in <span class="x-name"><a href="#//apple_ref/doc/uid/TP40004591-RH2-SW18" data-renderer-version="2" data-id="//apple_ref/doc/uid/TP40004591-RH2-SW18">Responding to the Cancel Command</a></span>. 
+</p></td>
+        </tr>
+    </tbody>
+  </table>
 <!-- content end -->
 </div>
 <br>
