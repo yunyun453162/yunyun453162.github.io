@@ -71,7 +71,7 @@ NSThread在使用时我们还要负责启动和管理，如果这样的工作比
 
     @end
 
-我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过main来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入`@property (copy) void (^completionBlock)(void)`这个属性去处理。`不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果内存等资源不够，它会抛出一个异常。`
+我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过main来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入`@property (copy) void (^completionBlock)(void)`这个属性去处理。`不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果内存等资源不够，它会抛出一个异常`，而交queue,系统则会根据并发数开启一个线程池，把任务交给成功开启的线程去逐个处理。
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -123,7 +123,7 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
 @end
 </code></pre>
 
-<p>我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过main来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入<code>@property (copy) void (^completionBlock)(void)</code>这个属性去处理。<code>不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果内存等资源不够，它会抛出一个异常。</code></p>
+<p>我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过main来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入<code>@property (copy) void (^completionBlock)(void)</code>这个属性去处理。<code>不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果内存等资源不够，它会抛出一个异常</code>，而交queue,系统则会根据并发数开启一个线程池，把任务交给成功开启的线程去逐个处理。</p>
 <!-- content end -->
 </div>
 <br>
