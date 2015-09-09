@@ -84,7 +84,7 @@ NSThread在使用时我们还要负责启动和管理，如果这样的工作比
 
 ###并发与同步
 一般来讲，把operation加入到系统的queue中使用的是异步调用，这样我们就不用担心当阻塞当前的调用线程。  
-1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们只需要实现一个方法`main`。  
+1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们最少只实现一个方法`main`即可。  
 2. 异步 异步至少要实现：  
   - start
   - asynchronous
@@ -227,7 +227,7 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
 <h3 id="">并发与同步</h3>
 
 <p>一般来讲，把operation加入到系统的queue中使用的是异步调用，这样我们就不用担心当阻塞当前的调用线程。 <br>
-1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们只需要实现一个方法<code>main</code>。 <br>
+1. 同步 如果我们想要子类化一个operation，并使用同步调用，我们最少只实现一个方法<code>main</code>即可。 <br>
 2. 异步 异步至少要实现： <br>
   - start
   - asynchronous
