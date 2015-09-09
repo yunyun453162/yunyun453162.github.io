@@ -150,6 +150,17 @@ For additional information and guidance on how to define concurrent operations, 
 
 
 ##NSOperationQueue
+NSOperationQueue 是调度我们封装好的操作的队列，它有点类似于一个指挥交通的交警，负责指挥调度不同方向车辆的行驶顺序，维持执行秩序。NSOperationQueue有以下特点：  
+
+- 所有`add`到NSOperationQueue中的NSOperation，会被NSOperationQueue在适当时机放权执行，并一直持有到操作结束。
+- 移除`add`到queue里面的operation，要么等operation真正执行完成，要么手动`cancel`。
+- operation的依赖仍然有效，它会等到`isReady`为`真`时才开始执行，但是比其它ready状态的operation有更高的优先级。
+- cancel 正在执行中的操作会尽快中止执行，而在等待状态的操作则会进入到start或main中去检测状态再退出执行。
+- 加入队列的操作都将进入GCD中的单独线程中调用，不论它们被指定为同步还是异步操作。
+- 队列中的操作优先级高的先执行，优先级相同按加入时间早的先执行。
+- 操作执行顺序并不总是一定的，如果你在确定的执行顺序，可以使用操作的依赖属性。
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -281,6 +292,18 @@ For additional information and guidance on how to define concurrent operations, 
   </table>
 
 <h2 id="nsoperationqueue">NSOperationQueue</h2>
+
+<p>NSOperationQueue 是调度我们封装好的操作的队列，它有点类似于一个指挥交通的交警，负责指挥调度不同方向车辆的行驶顺序，维持执行秩序。NSOperationQueue有以下特点：  </p>
+
+<ul>
+<li>所有<code>add</code>到NSOperationQueue中的NSOperation，会被NSOperationQueue在适当时机放权执行，并一直持有到操作结束。</li>
+<li>移除<code>add</code>到queue里面的operation，要么等operation真正执行完成，要么手动<code>cancel</code>。</li>
+<li>operation的依赖仍然有效，它会等到<code>isReady</code>为<code>真</code>时才开始执行，但是比其它ready状态的operation有更高的优先级。</li>
+<li>cancel 正在执行中的操作会尽快中止执行，而在等待状态的操作则会进入到start或main中去检测状态再退出执行。</li>
+<li>加入队列的操作都将进入GCD中的单独线程中调用，不论它们被指定为同步还是异步操作。</li>
+<li>队列中的操作优先级高的先执行，优先级相同按加入时间早的先执行。</li>
+<li>操作执行顺序并不总是一定的，如果你在确定的执行顺序，可以使用操作的依赖属性。</li>
+</ul>
 <!-- content end -->
 </div>
 <br>
