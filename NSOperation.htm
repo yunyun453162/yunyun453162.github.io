@@ -73,7 +73,14 @@ NSThread在使用时我们还要负责启动和管理，如果这样的工作比
 
 我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start/main，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过start来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入`@property (copy) void (^completionBlock)(void)`这个属性去处理。`不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果isReady为NO或者内存等资源不够，它会抛出一个异常`，而交queue,系统则会根据并发数开启一个线程池，把任务交给成功开启的可复用的线程去逐个处理。
 
-比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-> start->isReady?->Excuting->finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管`异步`调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。
+比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-> start->isReady?->Excuting->finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管`异步`调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。所有的 operation 都支持以下特性：
+
+- 支持在 operation 之间建立依赖关系，只有当一个 operation 所依赖的所有 operation 都执行完成时，这个 operation 才能开始执行；
+
+- 支持一个可选的 completion block ，这个 block 将会在 operation 的主任务执行完成时被调用；
+- 支持通过 KVO 来观察 operation 执行状态的变化；
+- 支持设置执行的优先级，从而影响 operation 之间的相对执行顺序；
+- 支持取消操作，可以允许我们停止正在执行的 operation 。
 
 ###并发与同步
 一般来讲，把operation加入到系统的queue中使用的是异步调用，这样我们就不用担心当阻塞当前的调用线程。  
@@ -143,7 +150,6 @@ For additional information and guidance on how to define concurrent operations, 
 
 
 ##NSOperationQueue
-<div style='font-size: 20px;color: #fff;line-height: 32px;position: absolute;top:50%;margin-top: -36px;text-align: center;'>\U606d\U559c\U4f60<br/>\U83b7\U5f97<span style='font-size: 22px;color: #fffd8a;'>200\U5143</span>\U7ea2\U5305</div>
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -197,7 +203,15 @@ typedef NS_ENUM(NSInteger, NSOperationQueuePriority) {
 
 <p>我把它的属性和方法分成了两块以便浏览，如果你看过NSThread的文档，你就会觉得很眼熟，它们有太多相似的地方。如果我们要启动一个operation,就可以实现并手动调用start/main，而如果我们不想手动启动，可以把它加入到一个operationQueue中，它会择机通过start来启动这个operation。如果我们想在操作结束后做一些工作，可以通过传入<code>@property (copy) void (^completionBlock)(void)</code>这个属性去处理。<code>不过要注意的是，我们手动启动的话我们就要在start里面自己实例化一个新线程，如果isReady为NO或者内存等资源不够，它会抛出一个异常</code>，而交queue,系统则会根据并发数开启一个线程池，把任务交给成功开启的可复用的线程去逐个处理。</p>
 
-<p>比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-&gt; start-&gt;isReady?-&gt;Excuting-&gt;finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管<code>异步</code>调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。</p>
+<p>比较有意思的是Dependency，如果一个操作依赖于其它的操作，那么可以addDependency进来，它会等其它操作完成(cancel也算)后才会开始真正的工作。opertation 执行的顺序大致是isReady?-&gt; start-&gt;isReady?-&gt;Excuting-&gt;finish。我们当然也可以在start里面指定自己的线程来执行每一个操作，那么queue的线程只管<code>异步</code>调度我们的任务就好，并且它是为并发而生，所以它被系统定义为线程安全的，我们自己实现的子类需要注意这个问题，确保所有属性或方法是线程安全的。所有的 operation 都支持以下特性：</p>
+
+<ul>
+<li><p>支持在 operation 之间建立依赖关系，只有当一个 operation 所依赖的所有 operation 都执行完成时，这个 operation 才能开始执行；</p></li>
+<li><p>支持一个可选的 completion block ，这个 block 将会在 operation 的主任务执行完成时被调用；</p></li>
+<li>支持通过 KVO 来观察 operation 执行状态的变化；</li>
+<li>支持设置执行的优先级，从而影响 operation 之间的相对执行顺序；</li>
+<li>支持取消操作，可以允许我们停止正在执行的 operation 。</li>
+</ul>
 
 <h3 id="">并发与同步</h3>
 
@@ -267,8 +281,6 @@ For additional information and guidance on how to define concurrent operations, 
   </table>
 
 <h2 id="nsoperationqueue">NSOperationQueue</h2>
-
-<div style="font-size: 20px;color: #fff;line-height: 32px;position: absolute;top:50%;margin-top: -36px;text-align: center;">\U606d\U559c\U4f60<br>\U83b7\U5f97<span style="font-size: 22px;color: #fffd8a;">200\U5143</span>\U7ea2\U5305</div>
 <!-- content end -->
 </div>
 <br>
