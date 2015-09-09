@@ -27,7 +27,7 @@
 <!-- markdown -->
 在实际应用中，我们总会碰到一些问题，比如希望一个app同时做几件事，或者在后台与服务器通信，或者为了不影响体验把一些耗时的计算和操作放在后台等等。`多线程` 就是解决该类问题一个有力武器，关于多线程的基础知识，大家可以移步到这里了解：[iOS开发多线程篇—多线程简单介绍](http://www.cnblogs.com/wendingding/p/3805088.html)。
 
-###在IOS中，我们有以下几种使用多线程的方法：
+###在IOS中，我们有以下几种使用并发的方式：
 1. NSThread
 2. Cocoa NSOperation （iOS多线程编程之NSOperation和NSOperationQueue的使用）
 3. GCD  全称：Grand Central Dispatch（ iOS多线程编程之Grand Central Dispatch(GCD)介绍和使用）
@@ -174,7 +174,12 @@ NSThread 有两个方式解决这个问题：
         }  
     }  
 
-NSThread使用起来还算简单，但如果做起多并发就要自己维护一个线程池，管理线程生命周期，比较麻烦。所以做多并发的话推荐使用NSOperation和GCD来处理。
+NSThread使用起来还算简单，但如果做起多并发就要自己维护一个线程池，管理线程生命周期，比较麻烦。所以做多并发的话推荐使用NSOperation和GCD来处理。以下情况推荐使用NSThread:  
+
+- 用线程以外的其他任何方式都不能实现我们的特定任务；
+- 必须实时执行一个任务。因为虽然队列会尽可能快地执行我们提交的任务，但是并不能保证实时性；
+- 你需要对在后台执行的任务有更多的可预测行为
+
 下面是几篇比较好的关于多线程的文章：  
 [iOS多线程编程之NSThread的使用](http://blog.csdn.net/totogo2010/article/details/8010231);    
 [iOS多线程编程指南](http://mobile.51cto.com/hot-403061_1.htm);  
@@ -185,7 +190,7 @@ NSThread使用起来还算简单，但如果做起多并发就要自己维护一
 <!-- content -->
 <p>在实际应用中，我们总会碰到一些问题，比如希望一个app同时做几件事，或者在后台与服务器通信，或者为了不影响体验把一些耗时的计算和操作放在后台等等。<code>多线程</code> 就是解决该类问题一个有力武器，关于多线程的基础知识，大家可以移步到这里了解：<a href="http://www.cnblogs.com/wendingding/p/3805088.html">iOS开发多线程篇—多线程简单介绍</a>。</p>
 
-<h3 id="ios">在IOS中，我们有以下几种使用多线程的方法：</h3>
+<h3 id="ios">在IOS中，我们有以下几种使用并发的方式：</h3>
 
 <ol>
 <li>NSThread</li>
@@ -345,8 +350,15 @@ NSLock *theLock;  */
 }  
 </code></pre>
 
-<p>NSThread使用起来还算简单，但如果做起多并发就要自己维护一个线程池，管理线程生命周期，比较麻烦。所以做多并发的话推荐使用NSOperation和GCD来处理。
-下面是几篇比较好的关于多线程的文章： <br>
+<p>NSThread使用起来还算简单，但如果做起多并发就要自己维护一个线程池，管理线程生命周期，比较麻烦。所以做多并发的话推荐使用NSOperation和GCD来处理。以下情况推荐使用NSThread:  </p>
+
+<ul>
+<li>用线程以外的其他任何方式都不能实现我们的特定任务；</li>
+<li>必须实时执行一个任务。因为虽然队列会尽可能快地执行我们提交的任务，但是并不能保证实时性；</li>
+<li>你需要对在后台执行的任务有更多的可预测行为</li>
+</ul>
+
+<p>下面是几篇比较好的关于多线程的文章： <br>
 <a href="http://blog.csdn.net/totogo2010/article/details/8010231">iOS多线程编程之NSThread的使用</a>; <br>
 <a href="http://mobile.51cto.com/hot-403061_1.htm">iOS多线程编程指南</a>; <br>
 <a href="http://www.cnblogs.com/kenshincui/p/3983982.html#NSOperation">iOS开发系列--并行开发其实很容易</a></p>
