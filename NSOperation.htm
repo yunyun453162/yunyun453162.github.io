@@ -29,7 +29,16 @@
 ##NSOperation
 NSThread在使用时我们还要负责启动和管理，如果这样的工作比较多，我们就不得不做了很多重复的无意义的工作，而且增加了代码耦合性。那么我们就要想办法来封装一个类，在它里面去开线程和管理，更进一步我们只要传递target，方法，和参数给它，其它操作用同一个实现，然后只要一个结果就好(甚至我不需要知道结果)--NSOperation就这是这样一个抽象类。
 
-说到`抽象类`，在OC中没有专门表示抽象的关键字，但我们还是可以用到这种思想－`定义一些方法，然而并不去真正实现`。那我们就要继承这个类，然后在自己的类中去实现它们，这对扩展是很有用的。系统提供了NSInvocationOperation  和 NSBlockOperation 给我们使用，它们都继承于NSOperation，并且仅对外提供了简单的接口。我们来看一下它的头文件：  
+说到`抽象类`，在OC中没有专门表示抽象的关键字，但我们还是可以用到这种思想－`定义一些方法，然而并不去真正实现`。那我们就要继承这个类，然后在自己的类中去实现它们，这对扩展是很有用的。系统提供了NSInvocationOperation  和 NSBlockOperation 给我们使用，它们都继承于NSOperation，并且仅对外提供了简单的接口。
+
+例子：  
+
+    NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{
+      NSLog(@"Beginning operation.\n");
+      // Do some work.
+    }];
+
+我们来看一下`NSOperation`的头文件：  
 
     @interface NSOperation : NSObject {
     @private
@@ -148,6 +157,34 @@ For additional information and guidance on how to define concurrent operations, 
     </tbody>
   </table>
 
+###示例代码  
+同步operation
+
+
+    @interface nonConcurrentOperation ()
+    @property (strong, nonatomic) id data;
+    @end
+    @implementation nonConcurrentOperation
+    - (id)initWithData:(id)data {
+            self = [super init];
+            if (self) {
+                    self.data = data;
+                }
+            return self;
+    }
+    ///  不支持取消操作
+    - (void)main {
+            @try {
+                    NSLog(@"Start executing %@ with data: %@, mainThread: %@, currentThread: %@", NSStringFromSelector(_cmd), self.data, [NSThread mainThread], [NSThread currentThread]);
+                    sleep(3);
+                    NSLog(@"Finish executing %@", NSStringFromSelector(_cmd));
+                }
+            @catch(NSException *exception) {
+                    NSLog(@"Exception: %@", exception);
+                }
+    }
+    @end
+
 
 ##NSOperationQueue
 NSOperationQueue 是调度我们封装好的操作的队列，它有点类似于一个指挥交通的交警，负责指挥调度不同方向车辆的行驶顺序，维持执行秩序。NSOperationQueue有以下特点：  
@@ -169,7 +206,17 @@ NSOperationQueue 是调度我们封装好的操作的队列，它有点类似于
 
 <p>NSThread在使用时我们还要负责启动和管理，如果这样的工作比较多，我们就不得不做了很多重复的无意义的工作，而且增加了代码耦合性。那么我们就要想办法来封装一个类，在它里面去开线程和管理，更进一步我们只要传递target，方法，和参数给它，其它操作用同一个实现，然后只要一个结果就好(甚至我不需要知道结果)--NSOperation就这是这样一个抽象类。</p>
 
-<p>说到<code>抽象类</code>，在OC中没有专门表示抽象的关键字，但我们还是可以用到这种思想－<code>定义一些方法，然而并不去真正实现</code>。那我们就要继承这个类，然后在自己的类中去实现它们，这对扩展是很有用的。系统提供了NSInvocationOperation  和 NSBlockOperation 给我们使用，它们都继承于NSOperation，并且仅对外提供了简单的接口。我们来看一下它的头文件：  </p>
+<p>说到<code>抽象类</code>，在OC中没有专门表示抽象的关键字，但我们还是可以用到这种思想－<code>定义一些方法，然而并不去真正实现</code>。那我们就要继承这个类，然后在自己的类中去实现它们，这对扩展是很有用的。系统提供了NSInvocationOperation  和 NSBlockOperation 给我们使用，它们都继承于NSOperation，并且仅对外提供了简单的接口。</p>
+
+<p>例子：  </p>
+
+<pre><code>NSBlockOperation* theOp = [NSBlockOperation blockOperationWithBlock: ^{
+  NSLog(@"Beginning operation.\n");
+  // Do some work.
+}];
+</code></pre>
+
+<p>我们来看一下<code>NSOperation</code>的头文件：  </p>
 
 <pre><code>@interface NSOperation : NSObject {
 @private
@@ -290,6 +337,35 @@ For additional information and guidance on how to define concurrent operations, 
         </tr>
     </tbody>
   </table>
+
+<h3 id="">示例代码</h3>
+
+<p>同步operation</p>
+
+<pre><code>@interface&nbsp;nonConcurrentOperation&nbsp;()
+@property&nbsp;(strong,&nbsp;nonatomic)&nbsp;id&nbsp;data;
+@end
+@implementation&nbsp;nonConcurrentOperation
+-&nbsp;(id)initWithData:(id)data&nbsp;{
+    &nbsp;&nbsp;&nbsp;&nbsp;self&nbsp;=&nbsp;[super&nbsp;init];
+    &nbsp;&nbsp;&nbsp;&nbsp;if&nbsp;(self)&nbsp;{
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;self.data&nbsp;=&nbsp;data;
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    &nbsp;&nbsp;&nbsp;&nbsp;return&nbsp;self;
+}
+///&nbsp;&nbsp;不支持取消操作
+-&nbsp;(void)main&nbsp;{
+    &nbsp;&nbsp;&nbsp;&nbsp;@try&nbsp;{
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"Start&nbsp;executing&nbsp;%@&nbsp;with&nbsp;data:&nbsp;%@,&nbsp;mainThread:&nbsp;%@,&nbsp;currentThread:&nbsp;%@",&nbsp;NSStringFromSelector(_cmd),&nbsp;self.data,&nbsp;[NSThread&nbsp;mainThread],&nbsp;[NSThread&nbsp;currentThread]);
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;sleep(3);
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"Finish&nbsp;executing&nbsp;%@",&nbsp;NSStringFromSelector(_cmd));
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+    &nbsp;&nbsp;&nbsp;&nbsp;@catch(NSException&nbsp;*exception)&nbsp;{
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;NSLog(@"Exception:&nbsp;%@",&nbsp;exception);
+        &nbsp;&nbsp;&nbsp;&nbsp;}
+}
+@end
+</code></pre>
 
 <h2 id="nsoperationqueue">NSOperationQueue</h2>
 
