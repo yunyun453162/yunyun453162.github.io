@@ -25,12 +25,158 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-before begin to write please click 'new post' or 'new page' first
+今天群里有人问到1x,2x,3x的图到底该怎么切？有人说按屏幕分辨率，也有人说6Plus的切图分辨率比实际分辨率大，是2208x1242，得按这个切。
+
+
+刚开始的时候我是草草分析过一次，但是：
+
+- 因为苹果让2x内容等比放大自动适配6p，虽然模糊了些，但还可以接受。
+- Apple不强制要求适配;
+- 适配的话我们的包也要增大不小，美工，程序都有不少工作。
+
+
+基于以上的原因，我前后几个app都没有去做这个适配。对于适配这块还是一知半解。今天正好在接友盟，闲来无事，也就略作分析。
+
+##基本步骤：
+
+1. xcode6.4新建一个singleview工程，它自动适配6p;
+2. 用代码的方式手动地在一个全屏view中添加3个imageView；
+3. 设置imageView的frame大小为固定值，如80X120，显示模式为UIViewContentModeCenter（原图大小）；
+4. 设置imageView的背景色为orangeColor,并设置边框裁剪。
+5. 按160X240准备2x图，240X360, 250X380(稍大些即可)，220X320准备3张不同的3x图；
+6.分别在5,6,6p模拟器上运行代码并察看结果。
+
+###步骤一
+打开xcode,在welcom面板中选择"
+Create a new Xcode project"->在iOS Application中选中single view application.->输入工程名等信息，点next->选择工程路径，create。
+###步骤二
+在ViewContr
+oller.m的添加如下代码  
+
+    - (void)viewDidLoad {
+        [super viewDidLoad];
+        // Do any additional setup after loading the view, typically from a nib.
+        
+        [self addImageViews];
+    }
+
+    - (void)addImageViews
+    {
+        NSArray * imagesArray = @[@"",@"",@""];
+        for(int i = 0; i < 3; i ++)
+        {
+            UIImageView * imgView = [self createImageView];
+            CGPoint center = imgView.center;
+            center.x = [UIScreen mainScreen].bounds.size.width /4 * (i+1) ;
+            imgView.center = center;
+            imgView.image = [UIImage imageNamed:imagesArray[i]];
+        }
+    }
+
+
+    - (UIImageView *)createImageView
+    {
+        UIImageView * view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 120)];
+        view.backgroundColor = [UIColor orangeColor];
+        view.contentMode = UIViewContentModeCenter;
+        view.clipsToBounds = YES;
+        view.center = self.view.center;
+        [self.view addSubview:view];
+        
+        return view;
+        
+    }
+    
+###步骤一
+###步骤一
+###步骤一
+###步骤一
+###步骤一
+###步骤一
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>今天群里有人问到1x,2x,3x的图到底该怎么切？有人说按屏幕分辨率，也有人说6Plus的切图分辨率比实际分辨率大，是2208x1242，得按这个切。</p>
 
+<p>刚开始的时候我是草草分析过一次，但是：</p>
+
+<ul>
+<li>因为苹果让2x内容等比放大自动适配6p，虽然模糊了些，但还可以接受。</li>
+<li>Apple不强制要求适配;</li>
+<li>适配的话我们的包也要增大不小，美工，程序都有不少工作。</li>
+</ul>
+
+<p>基于以上的原因，我前后几个app都没有去做这个适配。对于适配这块还是一知半解。今天正好在接友盟，闲来无事，也就略作分析。</p>
+
+<h2 id="">基本步骤：</h2>
+
+<ol>
+<li>xcode6.4新建一个singleview工程，它自动适配6p;</li>
+<li>用代码的方式手动地在一个全屏view中添加3个imageView；</li>
+<li>设置imageView的frame大小为固定值，如80X120，显示模式为UIViewContentModeCenter（原图大小）；</li>
+<li>设置imageView的背景色为orangeColor,并设置边框裁剪。</li>
+<li>按160X240准备2x图，240X360, 250X380(稍大些即可)，220X320准备3张不同的3x图；
+6.分别在5,6,6p模拟器上运行代码并察看结果。</li>
+</ol>
+
+<h3 id="">步骤一</h3>
+
+<p>打开xcode,在welcom面板中选择"
+Create a new Xcode project"-&gt;在iOS Application中选中single view application.-&gt;输入工程名等信息，点next-&gt;选择工程路径，create。</p>
+
+<h3 id="">步骤二</h3>
+
+<p>在ViewContr
+oller.m的添加如下代码  </p>
+
+<pre><code>- (void)viewDidLoad {
+    [super viewDidLoad];
+    // Do any additional setup after loading the view, typically from a nib.
+
+    [self addImageViews];
+}
+
+- (void)addImageViews
+{
+    NSArray * imagesArray = @[@"",@"",@""];
+    for(int i = 0; i &lt; 3; i ++)
+    {
+        UIImageView * imgView = [self createImageView];
+        CGPoint center = imgView.center;
+        center.x = [UIScreen mainScreen].bounds.size.width /4 * (i+1) ;
+        imgView.center = center;
+        imgView.image = [UIImage imageNamed:imagesArray[i]];
+    }
+}
+
+
+- (UIImageView *)createImageView
+{
+    UIImageView * view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, 80, 120)];
+    view.backgroundColor = [UIColor orangeColor];
+    view.contentMode = UIViewContentModeCenter;
+    view.clipsToBounds = YES;
+    view.center = self.view.center;
+    [self.view addSubview:view];
+
+    return view;
+
+}
+</code></pre>
+
+<h3 id="">步骤一</h3>
+
+<h3 id="">步骤一</h3>
+
+<h3 id="">步骤一</h3>
+
+<h3 id="">步骤一</h3>
+
+<h3 id="">步骤一</h3>
+
+<h3 id="">步骤一</h3>
 <!-- content end -->
 </div>
 <br>
