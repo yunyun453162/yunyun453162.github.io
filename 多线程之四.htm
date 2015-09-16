@@ -113,6 +113,93 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
 上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。
 
+4. 延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  
+
+        - (void)asyncExcute
+        {
+            if(!excuteQueue)
+                excuteQueue =  dispatch_queue_create("my_queue", nil);
+            
+            NSLog(@"Start a  task after delay 2s.");
+            [self excuteDelay];
+            NSLog(@"Do other thing!");
+        }
+        - (void)excuteDelay
+        {
+            // 延迟2秒执行：
+            double delayInSeconds = 2.0;
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            dispatch_after(popTime, excuteQueue, ^(void){
+                NSLog(@"excute the delay task.");
+            });
+        }
+结果：  
+
+        2015-09-16 18:24:53.190 testGCD[5032:158540] Start a  task after delay 2s.
+        2015-09-16 18:24:53.191 testGCD[5032:158540] Do other thing!
+        2015-09-16 18:24:55.383 testGCD[5032:158571] excute the delay task.
+
+4. 单例执行 － 有时候我们的任务只执行一次就足以，但我们不知道它是否已经执行，并需要确保它已执行。  
+
+        //先将我们的入口改造一下，调用时设置type为4.
+        - (void)asyncExcute:(NSUInteger)type
+        {
+            if(!excuteQueue)
+                excuteQueue =  dispatch_queue_create("my_queue", nil);
+            
+            switch (type) {
+                    
+                case 1:
+                {
+                    
+                }
+                    break;
+                    
+                case 2:
+                {
+                    
+                }
+                    break;
+                    
+                case 3:
+                {
+                    NSLog(@"Start a  task after delay 2s.");
+                    [self excuteDelay];
+                    NSLog(@"Do other thing!");
+                }
+                    break;
+                    
+                case 4:
+                {
+                    double delayInSeconds = 2.0;
+                    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+                    dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+                        [self onceExcute];
+                    });
+                    NSLog(@"excute first time");
+                    [self onceExcute];
+                }
+                    break;
+                    
+                default:
+                    break;
+            }
+        }
+
+        - (void)onceExcute
+        {
+            static dispatch_once_t onceToken;
+            dispatch_once(&onceToken, ^{
+                NSLog(@"excute once.");
+                sleep(3);
+            });
+        }
+结果  
+
+        2015-09-16 18:33:58.789 testGCD[5087:161564] excute first time
+        2015-09-16 18:33:58.789 testGCD[5087:161564] excute once.
+我们发现虽然调用了两次，但是我们的结果是只执行了一次。
+
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
 [GCD 深入理解（二）](http://www.cocoachina.com/industry/20140515/8433.html);  
@@ -230,6 +317,112 @@ NSLog(@"Do other thing!");
 </code></pre>
 
 <p>上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。</p></li>
+<li><p>延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  </p>
+
+<pre><code>- (void)asyncExcute
+{
+    if(!excuteQueue)
+        excuteQueue =  dispatch_queue_create("my_queue", nil);
+
+
+<pre><code>NSLog(@"Start a  task after delay 2s.");
+[self excuteDelay];
+NSLog(@"Do other thing!");
+</code></pre>
+
+}
+- (void)excuteDelay
+{
+    // 延迟2秒执行：
+    double delayInSeconds = 2.0;
+    dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+    dispatch_after(popTime, excuteQueue, ^(void){
+        NSLog(@"excute the delay task.");
+    });
+}
+</code></pre>
+
+<p>结果：  </p>
+
+<pre><code>2015-09-16 18:24:53.190 testGCD[5032:158540] Start a  task after delay 2s.
+2015-09-16 18:24:53.191 testGCD[5032:158540] Do other thing!
+2015-09-16 18:24:55.383 testGCD[5032:158571] excute the delay task.
+</code></pre></li>
+<li><p>单例执行 － 有时候我们的任务只执行一次就足以，但我们不知道它是否已经执行，并需要确保它已执行。  </p>
+
+<pre><code>//先将我们的入口改造一下，调用时设置type为4.
+- (void)asyncExcute:(NSUInteger)type
+{
+    if(!excuteQueue)
+        excuteQueue =  dispatch_queue_create("my_queue", nil);
+
+
+<pre><code>switch (type) {
+
+
+    case 1:
+    {
+
+
+    }
+        break;
+
+
+    case 2:
+    {
+
+
+    }
+        break;
+
+
+    case 3:
+    {
+        NSLog(@"Start a  task after delay 2s.");
+        [self excuteDelay];
+        NSLog(@"Do other thing!");
+    }
+        break;
+
+
+    case 4:
+    {
+        double delayInSeconds = 2.0;
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        dispatch_after(popTime, dispatch_get_main_queue(), ^(void){
+            [self onceExcute];
+        });
+        NSLog(@"excute first time");
+        [self onceExcute];
+    }
+        break;
+
+
+    default:
+        break;
+}
+</code></pre>
+
+}
+
+
+- (void)onceExcute
+{
+    static dispatch_once_t onceToken;
+    dispatch_once(&amp;onceToken, ^{
+        NSLog(@"excute once.");
+        sleep(3);
+    });
+}
+</code></pre>
+
+<p>结果  </p>
+
+<pre><code>2015-09-16 18:33:58.789 testGCD[5087:161564] excute first time
+2015-09-16 18:33:58.789 testGCD[5087:161564] excute once.
+</code></pre>
+
+<p>我们发现虽然调用了两次，但是我们的结果是只执行了一次。</p></li>
 </ol>
 
 <p>推荐文章： <br>
