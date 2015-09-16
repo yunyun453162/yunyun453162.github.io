@@ -47,7 +47,18 @@ GCD使用block来作为执行体，它可以直接在调用的地方封装好一
 
  就上面短短一些代码，我们就切换了两次线程，做了两次操作 ，没有传任何参数，也没有另写回调接口，操作和结果处理都在一块，这就是GCD带来的语法便利性。
 
-，
+##线程
+GCD提供了一系列的C风格接口实现多线程的功能，而线程的实现则在底层封装，我们每个代码块都可视作一个任务，而暴露出来的则是以下几种任务调度队列(dispatch queue)：
+
+1. 主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 dispatch_get_main_queue()；
+
+2.并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。
+
+- 后台全局并发队列（global dispatch queue），通过dispatch_get_global_queue(0, 0)获取；它有两个参数，第一个是设置任务执行优先级，一般我们用DISPATCH_QUEUE_PRIORITY_DEFAULT（0），还有一个是apple备用参数，传非0参数可能导致空指什异常。
+
+- 用户自定并发队列 － 通过
+
+
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -78,7 +89,20 @@ if (success) {
 
 <p>就上面短短一些代码，我们就切换了两次线程，做了两次操作 ，没有传任何参数，也没有另写回调接口，操作和结果处理都在一块，这就是GCD带来的语法便利性。</p>
 
-<p>，</p>
+<h2 id="">线程</h2>
+
+<p>GCD提供了一系列的C风格接口实现多线程的功能，而线程的实现则在底层封装，我们每个代码块都可视作一个任务，而暴露出来的则是以下几种任务调度队列(dispatch queue)：</p>
+
+<ol>
+<li>主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 dispatch<em>get</em>main_queue()；</li>
+</ol>
+
+<p>2.并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。</p>
+
+<ul>
+<li><p>后台全局并发队列（global dispatch queue），通过dispatch<em>get</em>global<em>queue(0, 0)获取；它有两个参数，第一个是设置任务执行优先级，一般我们用DISPATCH</em>QUEUE<em>PRIORITY</em>DEFAULT（0），还有一个是apple备用参数，传非0参数可能导致空指什异常。</p></li>
+<li><p>用户自定并发队列 － 通过</p></li>
+</ul>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
