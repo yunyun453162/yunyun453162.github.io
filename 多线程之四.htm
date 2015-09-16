@@ -61,6 +61,8 @@ DISPATCH_QUEUE_CONCURRENT 表示并发队列，DISPATCH_QUEUE_SERIAL则表示串
 
 3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过dispatch_queue_create("concurrent", NULL)来获取。
 
+--- 
+  需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用dispatch_release(queue)释放它,所有的GCD对象都是如此。
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -108,6 +110,10 @@ DISPATCH<em>QUEUE</em>CONCURRENT 表示并发队列，DISPATCH<em>QUEUE</em>SERI
 </ul>
 
 <p>3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过dispatch<em>queue</em>create("concurrent", NULL)来获取。</p>
+
+<hr>
+
+<p>需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用dispatch_release(queue)释放它,所有的GCD对象都是如此。</p>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
