@@ -64,6 +64,8 @@ DISPATCH_QUEUE_CONCURRENT 表示并发队列，DISPATCH_QUEUE_SERIAL则表示串
 --- 
   需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用dispatch_release(queue)释放它,所有的GCD对象都是如此。不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是IFIO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。
 
+## 执行方式
+
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
 [GCD 深入理解（二）](http://www.cocoachina.com/industry/20140515/8433.html);  
@@ -116,6 +118,8 @@ DISPATCH<em>QUEUE</em>CONCURRENT 表示并发队列，DISPATCH<em>QUEUE</em>SERI
 <hr>
 
 <p>需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用dispatch_release(queue)释放它,所有的GCD对象都是如此。不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是IFIO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。</p>
+
+<h2 id="">执行方式</h2>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
