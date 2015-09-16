@@ -65,7 +65,7 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
   需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用`dispatch_release(queue)`释放它,所有的GCD对象都是如此。不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是IFIO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。
 
 ## 执行方式
-1. 同步 － 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  
+1. 同步 (sync)－ 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  
 
         例1
 
@@ -81,6 +81,37 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
             NSLog(@"I've been waiting for 3 seconds！");
         }
 在这个例子中，当前线程等了3秒多后才打出log。这用在需要执行结果才能进入下一步的场景。需要注意的是，因为它会卡死线程，所以不要在主线程，主队列中去使用。
+
+2. 异步(async) － 有时候任务比较重，为了不卡死当前的执行线程，我们就把这个任务放在其它后台线程中执行。其结果是当前线程代码继续执行，提交的任务会稍后被调度。  
+
+        static  dispatch_queue_t excuteQueue = nil;
+        - (void)asyncExcute
+        {
+            if(!excuteQueue)
+                excuteQueue =  dispatch_queue_create("my_queue", nil);
+            
+            NSLog(@"Start a  task.");
+            dispatch_async(excuteQueue, ^(void) {
+                
+                [self excuteMainTask];
+            });
+            NSLog(@"Do other thing!");
+        }
+
+
+        - (void)excuteMainTask
+        {
+            NSLog(@"Start excute main task.");
+            sleep(3);
+            NSLog(@"Main task fniish!");
+        }
+结果如下：  
+
+        2015-09-16 17:32:22.455 testGCD[4667:143175] Start a  task.
+        2015-09-16 17:32:22.456 testGCD[4667:143219] Start excute main task.
+        2015-09-16 17:32:22.456 testGCD[4667:143175] Do other thing!
+        2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
+上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -138,7 +169,7 @@ if (success) {
 <h2 id="">执行方式</h2>
 
 <ol>
-<li><p>同步 － 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  </p>
+<li><p>同步 (sync)－ 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  </p>
 
 <pre><code>例1
 
@@ -161,6 +192,44 @@ NSLog(@"I've been waiting for 3 seconds！");
 </code></pre>
 
 <p>在这个例子中，当前线程等了3秒多后才打出log。这用在需要执行结果才能进入下一步的场景。需要注意的是，因为它会卡死线程，所以不要在主线程，主队列中去使用。</p></li>
+<li><p>异步(async) － 有时候任务比较重，为了不卡死当前的执行线程，我们就把这个任务放在其它后台线程中执行。其结果是当前线程代码继续执行，提交的任务会稍后被调度。  </p>
+
+<pre><code>static  dispatch_queue_t excuteQueue = nil;
+- (void)asyncExcute
+{
+    if(!excuteQueue)
+        excuteQueue =  dispatch_queue_create("my_queue", nil);
+
+
+<pre><code>NSLog(@"Start a  task.");
+dispatch_async(excuteQueue, ^(void) {
+
+
+    [self excuteMainTask];
+});
+NSLog(@"Do other thing!");
+</code></pre>
+
+}
+
+
+- (void)excuteMainTask
+{
+    NSLog(@"Start excute main task.");
+    sleep(3);
+    NSLog(@"Main task fniish!");
+}
+</code></pre>
+
+<p>结果如下：  </p>
+
+<pre><code>2015-09-16 17:32:22.455 testGCD[4667:143175] Start a  task.
+2015-09-16 17:32:22.456 testGCD[4667:143219] Start excute main task.
+2015-09-16 17:32:22.456 testGCD[4667:143175] Do other thing!
+2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
+</code></pre>
+
+<p>上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。</p></li>
 </ol>
 
 <p>推荐文章： <br>
