@@ -56,8 +56,10 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
 
 - 后台全局并发队列（global dispatch queue），通过dispatch_get_global_queue(0, 0)获取；它有两个参数，第一个是设置任务执行优先级，一般我们用DISPATCH_QUEUE_PRIORITY_DEFAULT（0），还有一个是apple备用参数，传非0参数可能导致空指什异常。
 
-- 用户自定并发队列 － 通过
+- 用户自定并发队列(concurrent queue) － 通过dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
+DISPATCH_QUEUE_CONCURRENT 表示并发队列，DISPATCH_QUEUE_SERIAL则表示串行队列，默认为串行。
 
+3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过dispatch_queue_create("concurrent", NULL)来获取。
 
 
 推荐文章：  
@@ -101,8 +103,11 @@ if (success) {
 
 <ul>
 <li><p>后台全局并发队列（global dispatch queue），通过dispatch<em>get</em>global<em>queue(0, 0)获取；它有两个参数，第一个是设置任务执行优先级，一般我们用DISPATCH</em>QUEUE<em>PRIORITY</em>DEFAULT（0），还有一个是apple备用参数，传非0参数可能导致空指什异常。</p></li>
-<li><p>用户自定并发队列 － 通过</p></li>
+<li><p>用户自定并发队列(concurrent queue) － 通过dispatch<em>queue</em>create("concurrent", DISPATCH<em>QUEUE</em>CONCURRENT)来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
+DISPATCH<em>QUEUE</em>CONCURRENT 表示并发队列，DISPATCH<em>QUEUE</em>SERIAL则表示串行队列，默认为串行。</p></li>
 </ul>
+
+<p>3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过dispatch<em>queue</em>create("concurrent", NULL)来获取。</p>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
