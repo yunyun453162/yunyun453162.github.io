@@ -52,14 +52,14 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
 --- -
 1. 主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 `dispatch_get_main_queue()`；
 
-2.并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。
+2. 并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。
 
 - 后台全局并发队列（global dispatch queue），通过`dispatch_get_global_queue(0, 0)`获取；它有两个参数，第一个是设置任务执行优先级，一般我们用`DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）`，还有一个是apple备用参数，传非0参数可能导致空指什异常。
 
 - 用户自定并发队列(concurrent queue) － 通过`dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)`来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
 `DISPATCH_QUEUE_CONCURRENT` 表示并发队列，`DISPATCH_QUEUE_SERIAL`则表示串行队列，默认`(NULL)`为串行。
 
-3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过`dispatch_queue_create("concurrent", NULL)`来获取。
+3. 串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过`dispatch_queue_create("concurrent", NULL)`来获取。
 
 --- 
   需要注意的是因为它是基于Ｃ的，所以我们自己创建的队列需要手动来管理内存，在用完后调用`dispatch_release(queue)`释放它,所有的GCD对象都是如此。不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是IFIO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。
@@ -113,7 +113,7 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
 上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。
 
-4. 延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  
+3. 延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  
 
         - (void)asyncExcute
         {
@@ -236,18 +236,13 @@ if (success) {
 <hr>
 
 <ol>
-<li>主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 <code>dispatch_get_main_queue()</code>；</li>
-</ol>
-
-<p>2.并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。</p>
-
-<ul>
+<li><p>主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 <code>dispatch_get_main_queue()</code>；</p></li>
+<li><p>并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。</p></li>
 <li><p>后台全局并发队列（global dispatch queue），通过<code>dispatch_get_global_queue(0, 0)</code>获取；它有两个参数，第一个是设置任务执行优先级，一般我们用<code>DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）</code>，还有一个是apple备用参数，传非0参数可能导致空指什异常。</p></li>
 <li><p>用户自定并发队列(concurrent queue) － 通过<code>dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)</code>来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
 <code>DISPATCH_QUEUE_CONCURRENT</code> 表示并发队列，<code>DISPATCH_QUEUE_SERIAL</code>则表示串行队列，默认<code>(NULL)</code>为串行。</p></li>
-</ul>
-
-<p>3.串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过<code>dispatch_queue_create("concurrent", NULL)</code>来获取。</p>
+<li><p>串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过<code>dispatch_queue_create("concurrent", NULL)</code>来获取。</p></li>
+</ol>
 
 <hr>
 
