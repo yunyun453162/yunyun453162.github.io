@@ -117,7 +117,8 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-16 17:32:22.456 testGCD[4667:143219] Start excute main task.
         2015-09-16 17:32:22.456 testGCD[4667:143175] Do other thing!
         2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
-上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。
+上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。  
+我们还可以异步执行一个指定方法：`void dispatch_async_f( dispatch_queue_t queue, void *context, dispatch_function_t work)`;
 
 3. 延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  
 
@@ -327,7 +328,8 @@ NSLog(@"Do other thing!");
 2015-09-16 17:32:25.461 testGCD[4667:143219] Main task fniish!
 </code></pre>
 
-<p>上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。</p></li>
+<p>上面的结果可以看出：我们虽然在mainTask中睡眠，但不影响调用的线程的执行。 <br>
+我们还可以异步执行一个指定方法：<code>void dispatch_async_f( dispatch_queue_t queue, void *context, dispatch_function_t work)</code>;</p></li>
 <li><p>延后执行 － 有时候我们希望任务稍晚一些自动执行，就可以使用这个功能。  </p>
 
 <pre><code>- (void)asyncExcute
