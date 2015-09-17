@@ -54,7 +54,10 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
 
 2. 并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。
 
-  - 后台全局并发队列（global dispatch queue），通过`dispatch_get_global_queue(0, 0)`获取；它有两个参数，第一个是设置任务执行优先级，一般我们用`DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）`，还有一个是apple备用参数，传非0参数可能导致空指什异常。需要注意的是，这个是不能断停和挂起的队列。
+  - 后台全局并发队列（global dispatch queue），通过`dispatch_get_global_queue(0, 0)`获取；它有两个参数，第一个是设置任务执行优先级，一般我们用`DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）`，还有一个是apple备用参数，传非0参数可能导致空指什异常。需要注意的是，这个是不能断停和挂起的队列。  
+
+             //官方文档
+             Because these concurrent queues are global to your application, you do not need to retain and release them; retain and release calls for them are ignored.
 
   - 用户自定并发队列(concurrent queue) － 通过`dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)`来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
 `DISPATCH_QUEUE_CONCURRENT` 表示并发队列，`DISPATCH_QUEUE_SERIAL`则表示串行队列，默认`(NULL)`为串行。
@@ -63,6 +66,8 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
 
 --- 
   不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是FIFO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。
+
+    When a dispatch queue is no longer needed, it should be released with dispatch_release(). Note that any pending blocks submitted to a queue will hold a reference to that queue. Therefore a queue will not be deallocated until all pending blocks have finished.
 
 ## 执行方式
 1. 同步 (sync)－ 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  
@@ -239,7 +244,11 @@ if (success) {
 <li><p>主队列main queue － 对应线程中的主线程，所有放在主队列中的代码块都将被分配在主线程中执行。获取方式 <code>dispatch_get_main_queue()</code>；</p></li>
 <li><p>并行队列 － 并行队列主要有两种，一种是系统一直运行在后台的，还有一种是自己生成的。</p>
 
-<ul><li><p>后台全局并发队列（global dispatch queue），通过<code>dispatch_get_global_queue(0, 0)</code>获取；它有两个参数，第一个是设置任务执行优先级，一般我们用<code>DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）</code>，还有一个是apple备用参数，传非0参数可能导致空指什异常。需要注意的是，这个是不能断停和挂起的队列。</p></li>
+<ul><li><p>后台全局并发队列（global dispatch queue），通过<code>dispatch_get_global_queue(0, 0)</code>获取；它有两个参数，第一个是设置任务执行优先级，一般我们用<code>DISPATCH_QUEUE_PRIORITY_DEFAULT（值为0）</code>，还有一个是apple备用参数，传非0参数可能导致空指什异常。需要注意的是，这个是不能断停和挂起的队列。  </p>
+
+<pre><code> //官方文档
+ Because these concurrent queues are global to your application, you do not need to retain and release them; retain and release calls for them are ignored.
+</code></pre></li>
 <li><p>用户自定并发队列(concurrent queue) － 通过<code>dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)</code>来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
 <code>DISPATCH_QUEUE_CONCURRENT</code> 表示并发队列，<code>DISPATCH_QUEUE_SERIAL</code>则表示串行队列，默认<code>(NULL)</code>为串行。</p></li></ul></li>
 <li><p>串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过<code>dispatch_queue_create("concurrent", NULL)</code>来获取。</p></li>
@@ -248,6 +257,9 @@ if (success) {
 <hr>
 
 <p>不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是FIFO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。</p>
+
+<pre><code>When a dispatch queue is no longer needed, it should be released with dispatch_release(). Note that any pending blocks submitted to a queue will hold a reference to that queue. Therefore a queue will not be deallocated until all pending blocks have finished.
+</code></pre>
 
 <h2 id="">执行方式</h2>
 
