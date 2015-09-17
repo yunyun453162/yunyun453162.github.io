@@ -268,8 +268,47 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
     2015-09-17 14:35:48.461 testGCD[2061:90933] group3
     2015-09-17 14:35:48.461 testGCD[2061:90893] do something after group finish
 
-上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？
+上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？不过下面这个问题要注意了：  
 
+        - (void)excuteGroup
+        {
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_group_t group = dispatch_group_create();
+            NSLog(@"start excute group");
+            dispatch_group_async(group, queue, ^{
+                //sleep(2);
+                NSLog(@"group1");
+            });
+            dispatch_group_async(group, queue, ^{
+                //sleep(3);
+                NSLog(@"group2");
+            });
+            dispatch_group_async(group, queue, ^{
+                //sleep(4);
+                NSLog(@"group3");
+            });
+            dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+                NSLog(@"do something after group finish");
+            });
+            
+            dispatch_after([self getDelayTime:1], queue, ^{
+                           
+               dispatch_group_async(group, queue, ^{
+                   sleep(3);
+                   NSLog(@"group4");
+               });
+            });
+        }
+思考一下结果是什么？  
+
+        2015-09-17 17:26:51.883 testGCD[1091:43880] start excute group
+        2015-09-17 17:26:51.884 testGCD[1091:43920] group1
+        2015-09-17 17:26:51.884 testGCD[1091:43922] group2
+        2015-09-17 17:26:51.885 testGCD[1091:43921] group3
+        2015-09-17 17:26:51.901 testGCD[1091:43880] do something after group finish
+        2015-09-17 17:26:55.919 testGCD[1091:43922] group4
+
+block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -571,7 +610,50 @@ void (^block)(size_t));
 2015-09-17 14:35:48.461 testGCD[2061:90893] do something after group finish
 </code></pre>
 
-<p>上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？</p>
+<p>上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？不过下面这个问题要注意了：  </p>
+
+<pre><code>    - (void)excuteGroup
+    {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_group_t group = dispatch_group_create();
+        NSLog(@"start excute group");
+        dispatch_group_async(group, queue, ^{
+            //sleep(2);
+            NSLog(@"group1");
+        });
+        dispatch_group_async(group, queue, ^{
+            //sleep(3);
+            NSLog(@"group2");
+        });
+        dispatch_group_async(group, queue, ^{
+            //sleep(4);
+            NSLog(@"group3");
+        });
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            NSLog(@"do something after group finish");
+        });
+
+        dispatch_after([self getDelayTime:1], queue, ^{
+
+           dispatch_group_async(group, queue, ^{
+               sleep(3);
+               NSLog(@"group4");
+           });
+        });
+    }
+</code></pre>
+
+<p>思考一下结果是什么？  </p>
+
+<pre><code>    2015-09-17 17:26:51.883 testGCD[1091:43880] start excute group
+    2015-09-17 17:26:51.884 testGCD[1091:43920] group1
+    2015-09-17 17:26:51.884 testGCD[1091:43922] group2
+    2015-09-17 17:26:51.885 testGCD[1091:43921] group3
+    2015-09-17 17:26:51.901 testGCD[1091:43880] do something after group finish
+    2015-09-17 17:26:55.919 testGCD[1091:43922] group4
+</code></pre>
+
+<p>block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！</p>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
