@@ -87,7 +87,6 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
             NSLog(@"I've been waiting for 3 seconds！");
         }
 在这个例子中，当前线程等了3秒多后才打出log。这用在需要执行结果才能进入下一步的场景。需要注意的是，因为它会卡死线程，所以不要在主线程，主队列中去使用。
-
 同步执行有个问题就是死锁，如果你把一个任务disapatch到当前的线程中来，它们就会互相等待，造成死锁。
 
 2. 异步(async) － 有时候任务比较重，为了不卡死当前的执行线程，我们就把这个任务放在其它后台线程中执行。其结果是当前线程代码继续执行，提交的任务会稍后被调度。  
@@ -237,7 +236,39 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 3
         2015-09-17 13:25:05.114 testGCD[1631:69794] excute counts is 4
 
-6. 
+6. dispatch_group
+
+在第5个例子中，虽然我们可以将一个耗时的循环操作放在并发队列中平行执行，但是这样一来我们就控制不了执行的先后顺序，也不知道是不是完成了整个循环。我们想在完成所有任务后执行下一步，怎么办？
+
+        - (void)excuteGroup
+        {
+            dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+            dispatch_group_t group = dispatch_group_create();
+            dispatch_group_async(group, queue, ^{
+                sleep(2);
+                NSLog(@"group1");
+            });
+            dispatch_group_async(group, queue, ^{
+                sleep(3);
+                NSLog(@"group2");
+            });
+            dispatch_group_async(group, queue, ^{
+                sleep(4);
+                NSLog(@"group3");
+            });
+            dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+                NSLog(@"do something after group finish");
+            });
+        }
+结果：  
+
+    2015-09-17 14:35:46.460 testGCD[2061:90932] group1
+    2015-09-17 14:35:47.462 testGCD[2061:90931] group2
+    2015-09-17 14:35:48.461 testGCD[2061:90933] group3
+    2015-09-17 14:35:48.461 testGCD[2061:90893] do something after group finish
+
+上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？
+
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -322,12 +353,8 @@ NSLog(@"I've been waiting for 3 seconds！");
 }
 </code></pre>
 
-<p>在这个例子中，当前线程等了3秒多后才打出log。这用在需要执行结果才能进入下一步的场景。需要注意的是，因为它会卡死线程，所以不要在主线程，主队列中去使用。</p></li>
-</ol>
-
-<p>同步执行有个问题就是死锁，如果你把一个任务disapatch到当前的线程中来，它们就会互相等待，造成死锁。</p>
-
-<ol>
+<p>在这个例子中，当前线程等了3秒多后才打出log。这用在需要执行结果才能进入下一步的场景。需要注意的是，因为它会卡死线程，所以不要在主线程，主队列中去使用。
+同步执行有个问题就是死锁，如果你把一个任务disapatch到当前的线程中来，它们就会互相等待，造成死锁。</p></li>
 <li><p>异步(async) － 有时候任务比较重，为了不卡死当前的执行线程，我们就把这个任务放在其它后台线程中执行。其结果是当前线程代码继续执行，提交的任务会稍后被调度。  </p>
 
 <pre><code>static  dispatch_queue_t excuteQueue = nil;
@@ -507,9 +534,42 @@ void (^block)(size_t));
 2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 3
 2015-09-17 13:25:05.114 testGCD[1631:69794] excute counts is 4
 </code></pre></li>
-
-6. 
+<li><p>dispatch_group</p></li>
 </ol>
+
+<p>在第5个例子中，虽然我们可以将一个耗时的循环操作放在并发队列中平行执行，但是这样一来我们就控制不了执行的先后顺序，也不知道是不是完成了整个循环。我们想在完成所有任务后执行下一步，怎么办？</p>
+
+<pre><code>    - (void)excuteGroup
+    {
+        dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
+        dispatch_group_t group = dispatch_group_create();
+        dispatch_group_async(group, queue, ^{
+            sleep(2);
+            NSLog(@"group1");
+        });
+        dispatch_group_async(group, queue, ^{
+            sleep(3);
+            NSLog(@"group2");
+        });
+        dispatch_group_async(group, queue, ^{
+            sleep(4);
+            NSLog(@"group3");
+        });
+        dispatch_group_notify(group, dispatch_get_main_queue(), ^{
+            NSLog(@"do something after group finish");
+        });
+    }
+</code></pre>
+
+<p>结果：  </p>
+
+<pre><code>2015-09-17 14:35:46.460 testGCD[2061:90932] group1
+2015-09-17 14:35:47.462 testGCD[2061:90931] group2
+2015-09-17 14:35:48.461 testGCD[2061:90933] group3
+2015-09-17 14:35:48.461 testGCD[2061:90893] do something after group finish
+</code></pre>
+
+<p>上面的执行结果依次晚1s钟，在最后一个结果完成之后才执行我们的notify代码，很方便有木有？</p>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
