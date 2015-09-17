@@ -68,6 +68,7 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
   不论并发队列还是串行队列，在没有建立依赖的情况下，所有的任务都是FIFO的。不同的是，串行是一个任务执行完了才能执行下一个，而并行则只有要空闲资源，就会按序一个接一个开始执行，不用等它其它任务执行结束，顺序是不可预知的。
 
     When a dispatch queue is no longer needed, it should be released with dispatch_release(). Note that any pending blocks submitted to a queue will hold a reference to that queue. Therefore a queue will not be deallocated until all pending blocks have finished.
+当然这是6.0之前的问题，现在它已经纳入arc的管理中了，添加了反而会报错。
 
 ## 执行方式
 1. 同步 (sync)－ 同步执行会让当前的调用线程处于等待状态，直到任务执行完成才继续。  
@@ -260,6 +261,8 @@ if (success) {
 
 <pre><code>When a dispatch queue is no longer needed, it should be released with dispatch_release(). Note that any pending blocks submitted to a queue will hold a reference to that queue. Therefore a queue will not be deallocated until all pending blocks have finished.
 </code></pre>
+
+<p>当然这是6.0之前的问题，现在它已经纳入arc的管理中了，添加了反而会报错。</p>
 
 <h2 id="">执行方式</h2>
 
