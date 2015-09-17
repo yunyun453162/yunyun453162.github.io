@@ -61,6 +61,7 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
 
   - 用户自定并发队列(concurrent queue) － 通过`dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)`来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
 `DISPATCH_QUEUE_CONCURRENT` 表示并发队列，`DISPATCH_QUEUE_SERIAL`则表示串行队列，默认`(NULL)`为串行。
+![异步顺序图](http://cdn.cocimg.com/cms/uploads/allimg/140428/4673_140428094116_1.png)
 
 3. 串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过`dispatch_queue_create("concurrent", NULL)`来获取。
 
@@ -315,7 +316,8 @@ if (success) {
  Because these concurrent queues are global to your application, you do not need to retain and release them; retain and release calls for them are ignored.
 </code></pre></li>
 <li><p>用户自定并发队列(concurrent queue) － 通过<code>dispatch_queue_create("concurrent", DISPATCH_QUEUE_CONCURRENT)</code>来获取，第一个参数是Ｃ字符串，用来标识这个队列，第二个参数则是队列类型－并发 or 串行。
-<code>DISPATCH_QUEUE_CONCURRENT</code> 表示并发队列，<code>DISPATCH_QUEUE_SERIAL</code>则表示串行队列，默认<code>(NULL)</code>为串行。</p></li></ul></li>
+<code>DISPATCH_QUEUE_CONCURRENT</code> 表示并发队列，<code>DISPATCH_QUEUE_SERIAL</code>则表示串行队列，默认<code>(NULL)</code>为串行。
+<img src="http://cdn.cocimg.com/cms/uploads/allimg/140428/4673_140428094116_1.png" alt="异步顺序图" title=""></p></li></ul></li>
 <li><p>串行队列（serial queue）－ 这个同样包含有两个，一个就是我们的主队列(main queue)，还有一个则是用户创建的队列。通过<code>dispatch_queue_create("concurrent", NULL)</code>来获取。</p></li>
 </ol>
 
