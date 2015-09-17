@@ -207,6 +207,34 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-16 18:33:58.789 testGCD[5087:161564] excute once.
 我们发现虽然调用了两次，但是我们的结果是只执行了一次,这对我们构建单例来说是个不错的功能。
 
+5. 重复执行  
+     
+        dispatch_apply(size_t iterations, dispatch_queue_t queue,
+		void (^block)(size_t));
+该方法传入执行次数，执行的目标queue,以及执行代码block。在block中可以获取当前的执行次数，它的作用和一个循环差不多。
+我们在上面的`- (void)asyncExcute:(NSUInteger)type`添加一个新的switch分支：  
+
+        case 5:
+                {
+                    dispatch_apply(5, excuteQueue, ^(size_t count){
+                    
+                        [self excuteLoop:count];
+                    });
+                }
+                    break;
+
+        - (void)excuteLoop:(size_t)count
+        {
+            NSLog(@"excute counts is %zu",count);
+        }
+结果是：  
+        
+        2015-09-17 13:25:05.112 testGCD[1631:69794] excute counts is 0
+        2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 1
+        2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 2
+        2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 3
+        2015-09-17 13:25:05.114 testGCD[1631:69794] excute counts is 4
+
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
 [GCD 深入理解（二）](http://www.cocoachina.com/industry/20140515/8433.html);  
@@ -436,6 +464,40 @@ NSLog(@"Do other thing!");
 </code></pre>
 
 <p>我们发现虽然调用了两次，但是我们的结果是只执行了一次,这对我们构建单例来说是个不错的功能。</p></li>
+<li><p>重复执行  </p>
+
+<pre><code>dispatch_apply(size_t iterations, dispatch_queue_t queue,
+void (^block)(size_t));
+</code></pre>
+
+<p>该方法传入执行次数，执行的目标queue,以及执行代码block。在block中可以获取当前的执行次数，它的作用和一个循环差不多。
+我们在上面的<code>- (void)asyncExcute:(NSUInteger)type</code>添加一个新的switch分支：  </p>
+
+<pre><code>case 5:
+        {
+            dispatch_apply(5, excuteQueue, ^(size_t count){
+
+
+<pre><code>            [self excuteLoop:count];
+        });
+    }
+        break;
+</code></pre>
+
+- (void)excuteLoop:(size_t)count
+{
+    NSLog(@"excute counts is %zu",count);
+}
+</code></pre>
+
+<p>结果是：  </p>
+
+<pre><code>2015-09-17 13:25:05.112 testGCD[1631:69794] excute counts is 0
+2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 1
+2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 2
+2015-09-17 13:25:05.113 testGCD[1631:69794] excute counts is 3
+2015-09-17 13:25:05.114 testGCD[1631:69794] excute counts is 4
+</code></pre></li>
 </ol>
 
 <p>推荐文章： <br>
