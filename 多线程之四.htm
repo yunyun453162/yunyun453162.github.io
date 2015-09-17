@@ -299,6 +299,11 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
                });
             });
         }
+        - (dispatch_time_t)getDelayTime:(double)delayInSeconds
+        {
+            dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+            return popTime;
+        }
 思考一下结果是什么？  
 
         2015-09-17 17:26:51.883 testGCD[1091:43880] start excute group
@@ -640,6 +645,11 @@ void (^block)(size_t));
                NSLog(@"group4");
            });
         });
+    }
+    - (dispatch_time_t)getDelayTime:(double)delayInSeconds
+    {
+        dispatch_time_t popTime = dispatch_time(DISPATCH_TIME_NOW, delayInSeconds * NSEC_PER_SEC);
+        return popTime;
     }
 </code></pre>
 
