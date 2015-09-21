@@ -313,8 +313,7 @@ GCD提供了一系列的C风格接口实现多线程的功能，而线程的实�
         2015-09-17 17:26:51.901 testGCD[1091:43880] do something after group finish
         2015-09-17 17:26:55.919 testGCD[1091:43922] group4
 
-block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！当然我们也可以只是等待一个时间，然后查询结果：`long dispatch_group_wait( dispatch_group_t group, dispatch_time_t timeout)`，这个接口会等待group一段时间直到完成或超时，完成返回0。
-
+block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！当然我们也可以只是等待一个时间，然后查询结果：`long dispatch_group_wait( dispatch_group_t group, dispatch_time_t timeout)`，这个接口会等待group一段时间直到完成或超时，完成返回0。  
 7. 挂起和恢复队列  
 恢复  
 
@@ -322,7 +321,8 @@ block4的代码在前三个执行完后1s才加进来，那时其它任务已经
 挂起  
         
         void dispatch_suspend( dispatch_object_t object);
-它们操作的对象是` dispatch queue or dispatch source`;
+它们操作的对象是` dispatch queue or dispatch source`;  
+8. GCD更多的特性如Barriers，Semaphores，source等。限于自己理解有限，就不深入了，以后看情况补充，下面两篇文章值得一看。
 
 推荐文章：  
 [GCD 深入理解（一）](http://www.cocoachina.com/industry/20140428/8248.html);  
@@ -672,22 +672,20 @@ void (^block)(size_t));
     2015-09-17 17:26:55.919 testGCD[1091:43922] group4
 </code></pre>
 
-<p>block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！当然我们也可以只是等待一个时间，然后查询结果：<code>long dispatch_group_wait( dispatch_group_t group, dispatch_time_t timeout)</code>，这个接口会等待group一段时间直到完成或超时，完成返回0。</p>
-
-<ol>
-<li><p>挂起和恢复队列 <br>
+<p>block4的代码在前三个执行完后1s才加进来，那时其它任务已经完成了！当然我们也可以只是等待一个时间，然后查询结果：<code>long dispatch_group_wait( dispatch_group_t group, dispatch_time_t timeout)</code>，这个接口会等待group一段时间直到完成或超时，完成返回0。 <br>
+7. 挂起和恢复队列 <br>
 恢复  </p>
 
-<pre><code>void dispatch_resume( dispatch_object_t object);
+<pre><code>    void dispatch_resume( dispatch_object_t object);
 </code></pre>
 
 <p>挂起  </p>
 
-<pre><code>void dispatch_suspend( dispatch_object_t object);
+<pre><code>    void dispatch_suspend( dispatch_object_t object);
 </code></pre>
 
-<p>它们操作的对象是<code>dispatch queue or dispatch source</code>;</p></li>
-</ol>
+<p>它们操作的对象是<code>dispatch queue or dispatch source</code>; <br>
+8. GCD更多的特性如Barriers，Semaphores，source等。限于自己理解有限，就不深入了，以后看情况补充，下面两篇文章值得一看。</p>
 
 <p>推荐文章： <br>
 <a href="http://www.cocoachina.com/industry/20140428/8248.html">GCD 深入理解（一）</a>; <br>
