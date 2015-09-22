@@ -201,7 +201,8 @@ IOS线程默认是没有RunLoop的，一个线程一次只能执行一个任务�
 总结：  
 RunLoop就是一个条件循环，当循环条件满足的时候，你可以用它来接收各种输入和消息，同时也为autorelease创造了条件。所有loop循环都需要手动加入一个AutoReleasepool,一个循环完毕自动释放。我还可以用监听者模式在循环里面监听我们相要的输入。它可以工作在单一模式下，也可以是多种模式并存，这取决于你的设置或系统的默认设置。
 
-推荐文章：
+推荐文章:  
+[官方文档](https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW3);  
 [深入理解RunLoop](http://www.cocoachina.com/ios/20150601/11970.html);  
 [iOS并发编程（Concurrency Programming）系列之一：Run Loop](http://oncenote.com/2015/03/22/Threading-Run-Loop/);  
 <!-- markdown end -->
@@ -389,7 +390,8 @@ int CFRunLoopRunSpecific(runloop, modeName, seconds, stopAfterHandle) {
 <p>总结： <br>
 RunLoop就是一个条件循环，当循环条件满足的时候，你可以用它来接收各种输入和消息，同时也为autorelease创造了条件。所有loop循环都需要手动加入一个AutoReleasepool,一个循环完毕自动释放。我还可以用监听者模式在循环里面监听我们相要的输入。它可以工作在单一模式下，也可以是多种模式并存，这取决于你的设置或系统的默认设置。</p>
 
-<p>推荐文章：
+<p>推荐文章: <br>
+<a href="https://developer.apple.com/library/ios/documentation/Cocoa/Conceptual/Multithreading/RunLoopManagement/RunLoopManagement.html#//apple_ref/doc/uid/10000057i-CH16-SW3">官方文档</a>; <br>
 <a href="http://www.cocoachina.com/ios/20150601/11970.html">深入理解RunLoop</a>; <br>
 <a href="http://oncenote.com/2015/03/22/Threading-Run-Loop/">iOS并发编程（Concurrency Programming）系列之一：Run Loop</a>;  </p>
 <!-- content end -->
