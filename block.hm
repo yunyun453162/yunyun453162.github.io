@@ -25,12 +25,12 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-
+`Block`是IOS引入的一个特性，它非常像C的函数指针。
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
-
+<p><code>Block</code>是IOS引入的一个特性，它非常像C的函数指针。</p>
 <!-- content end -->
 </div>
 <br>
