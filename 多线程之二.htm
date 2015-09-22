@@ -25,6 +25,7 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
+##原理简介
 RunLoop是IOS开发中较为底层的一个概念，我们通常情况下都用不到，顾名思义，它就是一个运行在线程中的循环。它和我们以前见过状态机很类似。
 
     while(1){
@@ -42,7 +43,33 @@ RunLoop是IOS开发中较为底层的一个概念，我们通常情况下都用�
 
 我们app的主线程有就一个类似的循环,当condition不满足时，它就一直在运行或等待中。RunLoop就是一个管理这种类似状态机的对象，让线程在没有处理消息时休眠以避免资源占用、在有消息到来时立刻被唤醒并执行任务，直到线程loop终止或线程退出。比较坑的是它虽然支持许多种事件，但是每次只是选择性执行，这就带来了模式（工作状态）切换问题。
 
+##工作模式
+<table class="graybox" border="0" cellspacing="0" cellpadding="5"><caption class="tablecaption"><strong class="caption_number">Table 3-1</strong>&nbsp;&nbsp;Predefined run loop modes</caption><tbody><tr><th scope="col" class="TableHeading_TableRow_TableCell"><p>Mode</p></th><th scope="col" class="TableHeading_TableRow_TableCell"><p>Name</p></th><th scope="col" class="TableHeading_TableRow_TableCell"><p>Description</p></th></tr><tr><td scope="row"><p>Default</p></td><td><p><code><a href="../../../Reference/Foundation/Classes/NSRunLoop_Class/index.html#//apple_ref/c/data/NSDefaultRunLoopMode" data-renderer-version="1" target="_self">NSDefaultRunLoopMode</a></code> (Cocoa)</p><p><code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/data/kCFRunLoopDefaultMode" data-renderer-version="1" target="_self">kCFRunLoopDefaultMode</a></code> (Core Foundation)</p></td><td><p>The default mode is the one used for most operations. Most of the time, you should use this mode to start your run loop and configure your input sources. </p></td></tr><tr><td scope="row"><p>Connection</p></td><td><p><code><!--a target="_self" -->NSConnectionReplyMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode in conjunction with <code><!--a target="_self" -->NSConnection<!--/a--></code> objects to monitor replies. You should rarely need to use this mode yourself.</p></td></tr><tr><td scope="row"><p>Modal</p></td><td><p><code><!--a target="_self" -->NSModalPanelRunLoopMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode to identify events intended for modal panels. </p></td></tr><tr><td scope="row"><p>Event tracking</p></td><td><p><code><!--a target="_self" -->NSEventTrackingRunLoopMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode to restrict incoming events during mouse-dragging loops and other sorts of user interface tracking loops. </p></td></tr><tr><td scope="row"><p>Common modes</p></td><td><p><code><a href="../../../Reference/Foundation/Classes/NSRunLoop_Class/index.html#//apple_ref/c/data/NSRunLoopCommonModes" data-renderer-version="1" target="_self">NSRunLoopCommonModes</a></code> (Cocoa)</p><p><code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/data/kCFRunLoopCommonModes" data-renderer-version="1" target="_self">kCFRunLoopCommonModes</a></code> (Core Foundation)</p></td><td><p>This is a configurable group of commonly used modes. Associating an input source with this mode also associates it with each of the modes in the group. For Cocoa applications, this set includes the default, modal, and event tracking modes by default. Core Foundation includes just the default mode initially. You can add custom modes to the set using the <code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/func/CFRunLoopAddCommonMode" data-renderer-version="1" target="_self">CFRunLoopAddCommonMode</a></code> function.</p></td></tr></tbody></table>
 
+
+##处理顺序  
+
+    Each time you run it, your thread’s run loop processes pending events and generates notifications for any attached observers. The order in which it does this is very specific and is as follows:
+
+   - Notify observers that the run loop has been entered.
+   - Notify observers that any ready timers are about to fire.
+   -Notify observers that any input sources that are not port based are about to fire.
+   - Fire any non-port-based input sources that are ready to fire.
+   - If a port-based input source is ready and waiting to fire, process the event immediately. Go to step 9.
+   - Notify observers that the thread is about to sleep.
+   - Put the thread to sleep until one of the following events occurs:
+   - An event arrives for a port-based input source.
+   - A timer fires.
+   - The timeout value set for the run loop expires.
+   - The run loop is explicitly woken up.
+   - Notify observers that the thread just woke up.
+   - Process the pending event.
+   - If a user-defined timer fired, process the timer event and restart the loop. Go to step 2.
+   - If an input source fired, deliver the event.
+   - If the run loop was explicitly woken up but has not yet timed out, restart the loop. Go to step 2.
+   - Notify observers that the run loop has exited.
+
+##使用
 线程创建和销毁都是要消耗系统资源的，在通常情况下我们可以不考虑这个，但是在高并发的情况下就不能不考虑了性能问题了，这就有了线程池的概念。而为了复用线程，我们就需要线程在执行完一个任务后不马上退出，而是休眠等待下一个任务到来，这里RunLoop就有了用武之地。
 
 OSX/iOS 系统中，提供了两个这样的对象：NSRunLoop 和 CFRunLoopRef。  
@@ -182,6 +209,8 @@ RunLoop就是一个条件循环，当循环条件满足的时候，你可以用�
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<h2 id="">原理简介</h2>
+
 <p>RunLoop是IOS开发中较为底层的一个概念，我们通常情况下都用不到，顾名思义，它就是一个运行在线程中的循环。它和我们以前见过状态机很类似。</p>
 
 <pre><code>while(1){
@@ -199,6 +228,37 @@ RunLoop就是一个条件循环，当循环条件满足的时候，你可以用�
 </code></pre>
 
 <p>我们app的主线程有就一个类似的循环,当condition不满足时，它就一直在运行或等待中。RunLoop就是一个管理这种类似状态机的对象，让线程在没有处理消息时休眠以避免资源占用、在有消息到来时立刻被唤醒并执行任务，直到线程loop终止或线程退出。比较坑的是它虽然支持许多种事件，但是每次只是选择性执行，这就带来了模式（工作状态）切换问题。</p>
+
+<h2 id="">工作模式</h2>
+
+<table class="graybox" border="0" cellspacing="0" cellpadding="5"><caption class="tablecaption"><strong class="caption_number">Table 3-1</strong>&nbsp;&nbsp;Predefined run loop modes</caption><tbody><tr><th scope="col" class="TableHeading_TableRow_TableCell"><p>Mode</p></th><th scope="col" class="TableHeading_TableRow_TableCell"><p>Name</p></th><th scope="col" class="TableHeading_TableRow_TableCell"><p>Description</p></th></tr><tr><td scope="row"><p>Default</p></td><td><p><code><a href="../../../Reference/Foundation/Classes/NSRunLoop_Class/index.html#//apple_ref/c/data/NSDefaultRunLoopMode" data-renderer-version="1" target="_self">NSDefaultRunLoopMode</a></code> (Cocoa)</p><p><code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/data/kCFRunLoopDefaultMode" data-renderer-version="1" target="_self">kCFRunLoopDefaultMode</a></code> (Core Foundation)</p></td><td><p>The default mode is the one used for most operations. Most of the time, you should use this mode to start your run loop and configure your input sources. </p></td></tr><tr><td scope="row"><p>Connection</p></td><td><p><code><!--a target="_self" -->NSConnectionReplyMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode in conjunction with <code><!--a target="_self" -->NSConnection<!--/a--></code> objects to monitor replies. You should rarely need to use this mode yourself.</p></td></tr><tr><td scope="row"><p>Modal</p></td><td><p><code><!--a target="_self" -->NSModalPanelRunLoopMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode to identify events intended for modal panels. </p></td></tr><tr><td scope="row"><p>Event tracking</p></td><td><p><code><!--a target="_self" -->NSEventTrackingRunLoopMode<!--/a--></code> (Cocoa)</p></td><td><p>Cocoa uses this mode to restrict incoming events during mouse-dragging loops and other sorts of user interface tracking loops. </p></td></tr><tr><td scope="row"><p>Common modes</p></td><td><p><code><a href="../../../Reference/Foundation/Classes/NSRunLoop_Class/index.html#//apple_ref/c/data/NSRunLoopCommonModes" data-renderer-version="1" target="_self">NSRunLoopCommonModes</a></code> (Cocoa)</p><p><code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/data/kCFRunLoopCommonModes" data-renderer-version="1" target="_self">kCFRunLoopCommonModes</a></code> (Core Foundation)</p></td><td><p>This is a configurable group of commonly used modes. Associating an input source with this mode also associates it with each of the modes in the group. For Cocoa applications, this set includes the default, modal, and event tracking modes by default. Core Foundation includes just the default mode initially. You can add custom modes to the set using the <code><a href="../../../../CoreFoundation/Reference/CFRunLoopRef/index.html#//apple_ref/c/func/CFRunLoopAddCommonMode" data-renderer-version="1" target="_self">CFRunLoopAddCommonMode</a></code> function.</p></td></tr></tbody></table>
+
+<h2 id="">处理顺序</h2>
+
+<pre><code>Each time you run it, your thread’s run loop processes pending events and generates notifications for any attached observers. The order in which it does this is very specific and is as follows:
+</code></pre>
+
+<ul>
+<li>Notify observers that the run loop has been entered.</li>
+<li>Notify observers that any ready timers are about to fire.
+-Notify observers that any input sources that are not port based are about to fire.</li>
+<li>Fire any non-port-based input sources that are ready to fire.</li>
+<li>If a port-based input source is ready and waiting to fire, process the event immediately. Go to step 9.</li>
+<li>Notify observers that the thread is about to sleep.</li>
+<li>Put the thread to sleep until one of the following events occurs:</li>
+<li>An event arrives for a port-based input source.</li>
+<li>A timer fires.</li>
+<li>The timeout value set for the run loop expires.</li>
+<li>The run loop is explicitly woken up.</li>
+<li>Notify observers that the thread just woke up.</li>
+<li>Process the pending event.</li>
+<li>If a user-defined timer fired, process the timer event and restart the loop. Go to step 2.</li>
+<li>If an input source fired, deliver the event.</li>
+<li>If the run loop was explicitly woken up but has not yet timed out, restart the loop. Go to step 2.</li>
+<li>Notify observers that the run loop has exited.</li>
+</ul>
+
+<h2 id="">使用</h2>
 
 <p>线程创建和销毁都是要消耗系统资源的，在通常情况下我们可以不考虑这个，但是在高并发的情况下就不能不考虑了性能问题了，这就有了线程池的概念。而为了复用线程，我们就需要线程在执行完一个任务后不马上退出，而是休眠等待下一个任务到来，这里RunLoop就有了用武之地。</p>
 
