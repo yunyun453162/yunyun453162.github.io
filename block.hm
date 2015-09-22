@@ -25,12 +25,21 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-`Block`是IOS引入的一个特性，它非常像C的函数指针。
+`Block`是`IOS 5`引入的一个特性，它非常像C的函数指针变量。
+
+
+
+
+推荐文章 ：  
+[官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);  
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
-<p><code>Block</code>是IOS引入的一个特性，它非常像C的函数指针。</p>
+<p><code>Block</code>是<code>IOS 5</code>引入的一个特性，它非常像C的函数指针变量。</p>
+
+<p>推荐文章 ： <br>
+<a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
 <!-- content end -->
 </div>
 <br>
