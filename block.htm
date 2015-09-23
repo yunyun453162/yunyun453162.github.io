@@ -125,12 +125,45 @@ OK，现在让我们来看一个block是怎样声明的。
      float result2 = [self getResultWithBlock:^(const int* x, int y, float z){
                return (*x + z)*y;
         }];
-中的`return (*x + z)*y;`就是我们写在block里面的回调代码，它被包含在block中一起传递给了`getResultWithBlock:`这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。
+中的`return (*x + z)*y;`就是我们写在block里面的回调代码，它被包含在block中一起传递给了`getResultWithBlock:`这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你自己想用来做什么。
 
 ##内存管理
+block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
+1. 它默认通过值拷贝的方式引用局部变量。
+
+    int a = 6;
+    float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+            //a++;
+            return (*x + y)*z+a ;
+        };
+结果：  
+
+    2015-09-23 17:57:21.434 testBlock[3676:156801] a is 6
+    2015-09-23 17:57:21.434 testBlock[3676:156801] reuslt is 110.000000,a is 6
+
+我们虽然可以在block里面用，但不能修改局问部变量，我们不注释掉那段代码就会报错，但是全局或者静态变量它又是指针引用，我们取消掉注释并在 `int a`前加上 `static`或者 `__block`。
+
+    - (void)testBaseTypeValue
+    {
+        static int a = 6;
+        float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+            
+            a++;
+            NSLog(@"a is %i",a);
+            return (*x + y)*z+a ;
+            
+        };
+        NSLog(@"reuslt is %f,a is %i",aBlock(&a,7,8.f),a);
+    } 
+    2015-09-23 17:50:34.274 testBlock[3653:153851] a is 7
+    2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
+2. 对于引用的对象变量， block会自动增加它们的引用计数。
+
 
 推荐文章 ：  
-[官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);  
+[官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);    
+[Objective-C中的Block](http://www.cocoachina.com/ios/20150109/10891.html);    
+[ iOS中block实现的探究](http://blog.csdn.net/jasonblog/article/details/7756763);
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -246,12 +279,50 @@ aBlock = ^(const int * x, int y, float z){
     }];
 </code></pre>
 
-<p>中的<code>return (*x + z)*y;</code>就是我们写在block里面的回调代码，它被包含在block中一起传递给了<code>getResultWithBlock:</code>这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。</p>
+<p>中的<code>return (*x + z)*y;</code>就是我们写在block里面的回调代码，它被包含在block中一起传递给了<code>getResultWithBlock:</code>这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你自己想用来做什么。</p>
 
 <h2 id="">内存管理</h2>
 
+<p>block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
+1. 它默认通过值拷贝的方式引用局部变量。</p>
+
+<pre><code>int a = 6;
+float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+        //a++;
+        return (*x + y)*z+a ;
+    };
+</code></pre>
+
+<p>结果：  </p>
+
+<pre><code>2015-09-23 17:57:21.434 testBlock[3676:156801] a is 6
+2015-09-23 17:57:21.434 testBlock[3676:156801] reuslt is 110.000000,a is 6
+</code></pre>
+
+<p>我们虽然可以在block里面用，但不能修改局问部变量，我们不注释掉那段代码就会报错，但是全局或者静态变量它又是指针引用，我们取消掉注释并在 <code>int a</code>前加上 <code>static</code>或者 <code>__block</code>。</p>
+
+<pre><code>- (void)testBaseTypeValue
+{
+    static int a = 6;
+    float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+
+        a++;
+        NSLog(@"a is %i",a);
+        return (*x + y)*z+a ;
+
+    };
+    NSLog(@"reuslt is %f,a is %i",aBlock(&amp;a,7,8.f),a);
+} 
+2015-09-23 17:50:34.274 testBlock[3653:153851] a is 7
+2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
+</code></pre>
+
+<p>2. 对于引用的对象变量， block会自动增加它们的引用计数。</p>
+
 <p>推荐文章 ： <br>
-<a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
+<a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>; <br>
+<a href="http://www.cocoachina.com/ios/20150109/10891.html">Objective-C中的Block</a>; <br>
+<a href="http://blog.csdn.net/jasonblog/article/details/7756763"> iOS中block实现的探究</a>;</p>
 <!-- content end -->
 </div>
 <br>
