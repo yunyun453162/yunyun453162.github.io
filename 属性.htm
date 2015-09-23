@@ -47,7 +47,7 @@
 其中第一组和内存有关，默认assign;第二组则是表示声明存取方法，或只有读取方法，默认readwrite;第三组则是原子性与否，和多线程有关，nonatomic表示非线程字全的，多线程访问可能有异常，但是效率高。atomic则是线程安全，但效率低，默认atomic。第四组则用来重命名set/get方法。
 
 ##synthesize
-synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字，默认变量名是属性名前面加个下划线`_`。
+synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字`@synthesize propertyName = newPropertyName`，默认变量名是属性名前面加个下划线`_`。
 
 ##普通类，接口，类别中的属性  
 1. 普通类的属性是最齐全的，它们不仅含有一对存取器，还自动支持KVO,KVC,还包含有一个属性变量。  
@@ -89,7 +89,7 @@ synthesize 关键字用来告诉编译器实现我们定义的属性，它和pro
 
 <h2 id="synthesize">synthesize</h2>
 
-<p>synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字，默认变量名是属性名前面加个下划线<code>_</code>。</p>
+<p>synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字<code>@synthesize propertyName = newPropertyName</code>，默认变量名是属性名前面加个下划线<code>_</code>。</p>
 
 <h2 id="">普通类，接口，类别中的属性</h2>
 
