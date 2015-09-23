@@ -39,9 +39,48 @@
     continue do other thing
 
 但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
-还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。在更老版本的OC中没有在语法层面上提供函数指针类似的语法，我们想要使用类似的功能只能写delegate来实现。delegate则要求我们在一个头文件中定义协议，在需要连接的两个文件中分别添加实现和监听变量，手动监听。虽然这样子做降低了代码的复杂性，对功能进行了模块化拆分，但是效率实在低得可以，我们很多时候并不要这么做。
 
-OK，现在让我们来看一个block是怎样定义的。
+
+OK，现在让我们来看一个block是怎样声明的。  
+   
+    float (^aBlock)(const int*, int, float);  
+ 
+上面这个block返回值为float类型，名字是aBlock，它接受三个参数，分别是 const int*, int, float类型。如果要一个类似功能的函数指针该如何声明？   
+
+    float (*functionName)(const int*, int, float);
+
+几乎毫无区别！只是把`*`号换成了`^`号而已。我们再来给我们声明的block变量赋值：
+
+     //....
+    
+    float (^aBlock)(const int*, int, float);
+    
+    aBlock = ^(const int * x, int y, float z){
+        
+        return (*x + y)*z;
+    };
+
+我们再加上调用过程：  
+
+    float (^aBlock)(const int*, int, float);
+    - (void)testBlock
+    {
+        aBlock = ^(const int * x, int y, float z){
+            
+            return (*x + y)*z;
+        };
+        
+        int a = 6;
+        float result =  aBlock(&a,7,8.f);
+        NSLog(@"result is %f",result);
+    }
+
+一个功能完整的block就新鲜出炉了，我们运行测试一下：  
+    
+    2015-09-23 16:01:02.844 testBlock[3461:111927] result is 104.000000
+
+这只是让我们看到它作为一个普通代码块和类似selector的功能，现在我想看看怎么把它当成一个参数传出去。
 
 
 
@@ -66,9 +105,52 @@ continue do other thing
 </code></pre>
 
 <p>但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
-还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。</p>
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。在更老版本的OC中没有在语法层面上提供函数指针类似的语法，我们想要使用类似的功能只能写delegate来实现。delegate则要求我们在一个头文件中定义协议，在需要连接的两个文件中分别添加实现和监听变量，手动监听。虽然这样子做降低了代码的复杂性，对功能进行了模块化拆分，但是效率实在低得可以，我们很多时候并不要这么做。</p>
 
-<p>OK，现在让我们来看一个block是怎样定义的。</p>
+<p>OK，现在让我们来看一个block是怎样声明的。  </p>
+
+<pre><code>float (^aBlock)(const int*, int, float);  
+</code></pre>
+
+<p>上面这个block返回值为float类型，名字是aBlock，它接受三个参数，分别是 const int*, int, float类型。如果要一个类似功能的函数指针该如何声明？   </p>
+
+<pre><code>float (*functionName)(const int*, int, float);
+</code></pre>
+
+<p>几乎毫无区别！只是把<code>*</code>号换成了<code>^</code>号而已。我们再来给我们声明的block变量赋值：</p>
+
+<pre><code> //....
+
+float (^aBlock)(const int*, int, float);
+
+aBlock = ^(const int * x, int y, float z){
+
+    return (*x + y)*z;
+};
+</code></pre>
+
+<p>我们再加上调用过程：  </p>
+
+<pre><code>float (^aBlock)(const int*, int, float);
+- (void)testBlock
+{
+    aBlock = ^(const int * x, int y, float z){
+
+        return (*x + y)*z;
+    };
+
+    int a = 6;
+    float result =  aBlock(&amp;a,7,8.f);
+    NSLog(@"result is %f",result);
+}
+</code></pre>
+
+<p>一个功能完整的block就新鲜出炉了，我们运行测试一下：  </p>
+
+<pre><code>2015-09-23 16:01:02.844 testBlock[3461:111927] result is 104.000000
+</code></pre>
+
+<p>这只是让我们看到它作为一个普通代码块和类似selector的功能，现在我想看看怎么把它当成一个参数传出去。</p>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
