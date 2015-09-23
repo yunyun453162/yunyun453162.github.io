@@ -25,8 +25,21 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-`Block`是`IOS 5`引入的一个特性，它非常像C的函数指针变量。它可以和普通OC变量一样使用，作用有点类似于SEL变量。但是可以把代码片段和调用区放在一起。
+`Block`是`IOS 5`引入的一个特性，它非常像C的函数指针变量。它可以和普通OC变量一样使用，作用有点类似于SEL变量。我们把一段代码用一对`{}`括起来，这就是一个代片段，一般情况下我们在一个方法里面用到这些，然后在里面定义一些新的变量，进行一些计算和处理，然后跳到片段外。  
 
+    //in a function head
+    do some thing here
+    ...
+    {
+        int x ,y,z = 0;
+        do some thing with x,y,z in the scope;
+        ...
+    }
+    
+    continue do other thing
+
+但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色。
 
 
 
@@ -36,7 +49,22 @@
 </div>
 <div class="entry" id="main">
 <!-- content -->
-<p><code>Block</code>是<code>IOS 5</code>引入的一个特性，它非常像C的函数指针变量。它可以和普通OC变量一样使用，作用有点类似于SEL变量。但是可以把代码片段和调用区放在一起。</p>
+<p><code>Block</code>是<code>IOS 5</code>引入的一个特性，它非常像C的函数指针变量。它可以和普通OC变量一样使用，作用有点类似于SEL变量。我们把一段代码用一对<code>{}</code>括起来，这就是一个代片段，一般情况下我们在一个方法里面用到这些，然后在里面定义一些新的变量，进行一些计算和处理，然后跳到片段外。  </p>
+
+<pre><code>//in a function head
+do some thing here
+...
+{
+    int x ,y,z = 0;
+    do some thing with x,y,z in the scope;
+    ...
+}
+
+continue do other thing
+</code></pre>
+
+<p>但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色。</p>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
