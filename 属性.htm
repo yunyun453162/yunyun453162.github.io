@@ -29,7 +29,7 @@
 
     @property (<#attributes#>) <#type#> <#name#>;
 
-`property`是关键字，attributes则是属性的说明，type则是属性类型，name是属性名。  
+`property`是关键字，attributes则是属性的说明参数，type则是属性类型，name是属性名。  
 
     @property(copy) NSString *title;
 
@@ -38,7 +38,14 @@
     - (NSString *)title;
     - (void)setTitle:(NSString *)newTitle;
 
-它定义了一套存取器，分别用来设置和获取某个值。
+它定义了一套存取器，分别用来设置和获取值。我们再来看下属性的几组参数：  
+
+1. retain  assign  copy  strong    weak     unsafe_unretained     autoreleasing
+2. readwrite  readonly
+3. nonatomic  atomic
+4. setter  getter
+其中第一组和内存有关，默认assign;第二组则是表示声明存取方法，或只有读取方法，默认readwrite;第三组则是原子性与否，和多线程有关，nonatomic表示非线程字全的，多线程访问可能有异常，但是效率高。atomic则是线程安全，但效率低，默认atomic。第四组则用来重命名set/get方法。
+
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);  
 <!-- markdown end -->
@@ -50,7 +57,7 @@
 <pre><code>@property (&lt;#attributes#&gt;) &lt;#type#&gt; &lt;#name#&gt;;
 </code></pre>
 
-<p><code>property</code>是关键字，attributes则是属性的说明，type则是属性类型，name是属性名。  </p>
+<p><code>property</code>是关键字，attributes则是属性的说明参数，type则是属性类型，name是属性名。  </p>
 
 <pre><code>@property(copy) NSString *title;
 </code></pre>
@@ -61,8 +68,17 @@
 - (void)setTitle:(NSString *)newTitle;
 </code></pre>
 
-<p>它定义了一套存取器，分别用来设置和获取某个值。
-推荐文章 ： <br>
+<p>它定义了一套存取器，分别用来设置和获取值。我们再来看下属性的几组参数：  </p>
+
+<ol>
+<li>retain  assign  copy  strong    weak     unsafe_unretained     autoreleasing</li>
+<li>readwrite  readonly</li>
+<li>nonatomic  atomic</li>
+<li>setter  getter
+其中第一组和内存有关，默认assign;第二组则是表示声明存取方法，或只有读取方法，默认readwrite;第三组则是原子性与否，和多线程有关，nonatomic表示非线程字全的，多线程访问可能有异常，但是效率高。atomic则是线程安全，但效率低，默认atomic。第四组则用来重命名set/get方法。</li>
+</ol>
+
+<p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
 <!-- content end -->
 </div>
