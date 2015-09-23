@@ -39,7 +39,9 @@
     continue do other thing
 
 但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
-还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色。
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。
+
+OK，现在让我们来看一个block是怎样定义的。
 
 
 
@@ -64,7 +66,9 @@ continue do other thing
 </code></pre>
 
 <p>但是Block做到的远不止这些，上述的代码只能是同步执行的，也不能被当成一个参数传递给其它的方法。但是block可以异步执行并被当成参数传递，并且它还管理着它里面用到的在它范围外面的变量的生命周期，有了它我们也不用烦恼我们怎么把更多的参数传给selector了，
-还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色。</p>
+还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。</p>
+
+<p>OK，现在让我们来看一个block是怎样定义的。</p>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
