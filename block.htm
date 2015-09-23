@@ -61,6 +61,13 @@ OK，现在让我们来看一个block是怎样声明的。
         return (*x + y)*z;
     };
 
+把它们连到一块就是：  
+
+    float (^aBlock)(const int*, int, float) ＝ ^(const int * x, int y, float z){
+        
+        return (*x + y)*z;
+    };
+
 我们再加上调用过程：  
 
     float (^aBlock)(const int*, int, float);
@@ -124,6 +131,14 @@ continue do other thing
 float (^aBlock)(const int*, int, float);
 
 aBlock = ^(const int * x, int y, float z){
+
+    return (*x + y)*z;
+};
+</code></pre>
+
+<p>把它们连到一块就是：  </p>
+
+<pre><code>float (^aBlock)(const int*, int, float) ＝ ^(const int * x, int y, float z){
 
     return (*x + y)*z;
 };
