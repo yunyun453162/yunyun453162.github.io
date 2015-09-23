@@ -49,6 +49,12 @@
 ##synthesize
 synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字，默认变量名是属性名前面加个下划线`_`。
 
+##普通类，接口，类别中的属性  
+1. 普通类的属性是最齐全的，它们不仅含有一对存取器，还自动支持KVO,KVC,还包含有一个属性变量。  
+2. 类别中的属性它其实只有一对存取器，没有实例变量。
+3. 而接口中对属性的声明和在普通类的interface中没有区别，区别在于它的实现，在普通类中用`@synthesize `来实现它就和普通类一样，在类别中实现它就和类别一样，`它仅仅只是一段声明代码`。
+
+
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/DeclaredProperty.html#//apple_ref/doc/uid/TP40008195-CH13-SW1);  
 <!-- markdown end -->
@@ -84,6 +90,14 @@ synthesize 关键字用来告诉编译器实现我们定义的属性，它和pro
 <h2 id="synthesize">synthesize</h2>
 
 <p>synthesize 关键字用来告诉编译器实现我们定义的属性，它和property是成对使用的。当然，写在类中它还可以做到给我们的属性变量重新取一个名字，默认变量名是属性名前面加个下划线<code>_</code>。</p>
+
+<h2 id="">普通类，接口，类别中的属性</h2>
+
+<ol>
+<li>普通类的属性是最齐全的，它们不仅含有一对存取器，还自动支持KVO,KVC,还包含有一个属性变量。  </li>
+<li>类别中的属性它其实只有一对存取器，没有实例变量。</li>
+<li>而接口中对属性的声明和在普通类的interface中没有区别，区别在于它的实现，在普通类中用<code>@synthesize</code>来实现它就和普通类一样，在类别中实现它就和类别一样，<code>它仅仅只是一段声明代码</code>。</li>
+</ol>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/DeclaredProperty.html#//apple_ref/doc/uid/TP40008195-CH13-SW1">官方文档</a>;  </p>
