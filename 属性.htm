@@ -25,21 +25,45 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
-`Block`（闭包）是`IOS 5`引入的一个特性，它非常像C的函数指针变量。  
-我们先看看官方的定义：  
+属性在OC中就是快速定义一对存取器的语法特性。你可以在类的头文件，接口和类别人使定这种语法。下面是属性定义的组成格式：  
 
-    Block objects are a C-level syntactic and runtime feature that allow you to compose function expressions that can be passed as arguments, optionally stored, and used by multiple threads. The function expression can reference and can preserve access to local variables. In other languages and environments, a block object is sometimes also called a closure or a lambda. 
+    @property (<#attributes#>) <#type#> <#name#>;
 
+`property`是关键字，attributes则是属性的说明，type则是属性类型，name是属性名。  
 
+    @property(copy) NSString *title;
 
+上面这一行定义，语法展开后相当于下面两行定义：
 
+    - (NSString *)title;
+    - (void)setTitle:(NSString *)newTitle;
+
+它定义了一套存取器，分别用来设置和获取某个值。
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);  
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<p>属性在OC中就是快速定义一对存取器的语法特性。你可以在类的头文件，接口和类别人使定这种语法。下面是属性定义的组成格式：  </p>
 
+<pre><code>@property (&lt;#attributes#&gt;) &lt;#type#&gt; &lt;#name#&gt;;
+</code></pre>
+
+<p><code>property</code>是关键字，attributes则是属性的说明，type则是属性类型，name是属性名。  </p>
+
+<pre><code>@property(copy) NSString *title;
+</code></pre>
+
+<p>上面这一行定义，语法展开后相当于下面两行定义：</p>
+
+<pre><code>- (NSString *)title;
+- (void)setTitle:(NSString *)newTitle;
+</code></pre>
+
+<p>它定义了一套存取器，分别用来设置和获取某个值。
+推荐文章 ： <br>
+<a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
 <!-- content end -->
 </div>
 <br>
