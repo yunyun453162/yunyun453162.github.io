@@ -43,6 +43,7 @@
 
 
 OK，现在让我们来看一个block是怎样声明的。  
+##基本语法
    
     float (^aBlock)(const int*, int, float);  
  
@@ -126,7 +127,7 @@ OK，现在让我们来看一个block是怎样声明的。
         }];
 中的`return (*x + z)*y;`就是我们写在block里面的回调代码，它被包含在block中一起传递给了`getResultWithBlock:`这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。
 
-
+##内存管理
 
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);  
@@ -152,6 +153,8 @@ continue do other thing
 还有比这个更直观的回调吗？我们的delegate，selector，在它面前都黯然失色，而且它还可以有返回值。在更老版本的OC中没有在语法层面上提供函数指针类似的语法，我们想要使用类似的功能只能写delegate来实现。delegate则要求我们在一个头文件中定义协议，在需要连接的两个文件中分别添加实现和监听变量，手动监听。虽然这样子做降低了代码的复杂性，对功能进行了模块化拆分，但是效率实在低得可以，我们很多时候并不要这么做。</p>
 
 <p>OK，现在让我们来看一个block是怎样声明的。  </p>
+
+<h2 id="">基本语法</h2>
 
 <pre><code>float (^aBlock)(const int*, int, float);  
 </code></pre>
@@ -244,6 +247,8 @@ aBlock = ^(const int * x, int y, float z){
 </code></pre>
 
 <p>中的<code>return (*x + z)*y;</code>就是我们写在block里面的回调代码，它被包含在block中一起传递给了<code>getResultWithBlock:</code>这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。</p>
+
+<h2 id="">内存管理</h2>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
