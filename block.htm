@@ -89,6 +89,31 @@ OK，现在让我们来看一个block是怎样声明的。
 
 这只是让我们看到它作为一个普通代码块和类似selector的功能，现在我想看看怎么把它当成一个参数传出去。
 
+    - (void)testBlock
+    {
+        float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+            
+            return (*x + y)*z;
+        };
+        
+        int a = 6;
+        float result =  aBlock(&a,7,8.f);
+        NSLog(@"result is %f",result);
+        
+        float result2 = [self getResultWithBlock:^(const int* x, int y, float z){
+               return (*x + z)*y;
+        }];
+        
+        NSLog(@"result 2 is %f",result2);
+    }
+
+
+    - (float)getResultWithBlock:(float (^)(const int* , int , float))block
+    {
+        int a = 6;
+        return  block(&a,7,8.f);
+    }
+
 
 
 推荐文章 ：  
@@ -166,6 +191,32 @@ aBlock = ^(const int * x, int y, float z){
 </code></pre>
 
 <p>这只是让我们看到它作为一个普通代码块和类似selector的功能，现在我想看看怎么把它当成一个参数传出去。</p>
+
+<pre><code>- (void)testBlock
+{
+    float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
+
+        return (*x + y)*z;
+    };
+
+    int a = 6;
+    float result =  aBlock(&amp;a,7,8.f);
+    NSLog(@"result is %f",result);
+
+    float result2 = [self getResultWithBlock:^(const int* x, int y, float z){
+           return (*x + z)*y;
+    }];
+
+    NSLog(@"result 2 is %f",result2);
+}
+
+
+- (float)getResultWithBlock:(float (^)(const int* , int , float))block
+{
+    int a = 6;
+    return  block(&amp;a,7,8.f);
+}
+</code></pre>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>;  </p>
