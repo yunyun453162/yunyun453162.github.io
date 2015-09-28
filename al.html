@@ -26,7 +26,7 @@
 <div id="md" style="display: none;">
 <!-- markdown -->
 今天在做动画的时候碰到了几个坑：  
-1. AL的旋转动画是以anchorPoint所在的点为旋转中心的，但如果设置了左右和上下al的话，它转动的时候中心点就会变化，导致动画游走振动。
+1. AL的旋转动画是以anchorPoint所在的点为旋转中心的，但如果设置了左右和上下al的话，它转动的时候中心点就会变化，导致动画游走振动，这个时候我们设置对齐方式为中心对齐，固定它的宽高比。
 
 2. 如果要手动修改anchorPoint和position,那么我们就需要注意了，我们不要用al来设置它的竖直对齐方式，还是行用代码来齐。  
 
@@ -108,12 +108,14 @@
         CGPoint position = blueView.layer.position;
         position.y += blueView.layer.bounds.size.height/2;
         blueView.layer.position = position;
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
 <p>今天在做动画的时候碰到了几个坑： <br>
-1. AL的旋转动画是以anchorPoint所在的点为旋转中心的，但如果设置了左右和上下al的话，它转动的时候中心点就会变化，导致动画游走振动。</p>
+1. AL的旋转动画是以anchorPoint所在的点为旋转中心的，但如果设置了左右和上下al的话，它转动的时候中心点就会变化，导致动画游走振动，这个时候我们设置对齐方式为中心对齐，固定它的宽高比。</p>
 
 <ol>
 <li><p>如果要手动修改anchorPoint和position,那么我们就需要注意了，我们不要用al来设置它的竖直对齐方式，还是行用代码来齐。  </p>
