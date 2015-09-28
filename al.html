@@ -99,7 +99,15 @@
         [UIView animateWithDuration:2.0 delay:2.0 options:UIViewAnimationOptionCurveEaseIn animations:nil completion:nil];
     }
 
-在上面的例子中
+在上面的例子中如果我没有注释掉  
+
+      //[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:blueView attribute:NSLayoutAttributeCenterY multiplier:1. constant:0]];
+
+那么会导致我们的`blueView`在IOS7中位置偏上方，我们设置的position失效。  
+
+        CGPoint position = blueView.layer.position;
+        position.y += blueView.layer.bounds.size.height/2;
+        blueView.layer.position = position;
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -182,7 +190,17 @@
 }
 </code></pre>
 
-<p>在上面的例子中</p>
+<p>在上面的例子中如果我没有注释掉  </p>
+
+<pre><code>  //[self.view addConstraint:[NSLayoutConstraint constraintWithItem:self.view attribute:NSLayoutAttributeCenterY relatedBy:NSLayoutRelationEqual toItem:blueView attribute:NSLayoutAttributeCenterY multiplier:1. constant:0]];
+</code></pre>
+
+<p>那么会导致我们的<code>blueView</code>在IOS7中位置偏上方，我们设置的position失效。  </p>
+
+<pre><code>    CGPoint position = blueView.layer.position;
+    position.y += blueView.layer.bounds.size.height/2;
+    blueView.layer.position = position;
+</code></pre>
 <!-- content end -->
 </div>
 <br>
