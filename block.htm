@@ -161,8 +161,47 @@ block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
     } 
     2015-09-23 17:50:34.274 testBlock[3653:153851] a is 7
     2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
-2. 对于引用的对象变量， block会自动增加它们的引用计数。
+2. 对于引用的对象变量， 它也是和上面一样处理
 
+    - (void)testObjectValue
+    {
+        __weak NSString * testStr = @"test";
+        void (^strBlock)() = ^{
+            NSLog(@"value is %@, address is %p",testStr,(&testStr));
+        };
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+            strBlock();
+        });
+    }
+在上面的示例代码中，我们使用了arc，原本`testStr `在方法结束后就要释放并且置为nil，我们用了延迟代码来执行打印`testStr`，发现它还是可以正常打印的，这说明block自动防止异步回调时空指针,当然，block会自动在结束的时候再把它释放掉，它们是不是也是通过值拷贝的方式传值？我们确认一下地址。
+
+
+    - (void)testObjectValue
+    {
+        __weak NSString * testStr = @"test";
+        NSLog(@"address outside is %p",&testStr);
+        void (^strBlock)() = ^{
+            NSLog(@"value is %@, address is %p",testStr,(&testStr));
+        };
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+            strBlock();
+        });
+        
+    }
+
+结果是：
+
+    2015-10-12 17:37:28.499 testBlock[1960:160556] address outside is 0x7fff58344a98
+    2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
+确实如我们所推测的那样。
+
+3. 类实例变量
+
+block会自动增加它们的引用计数。
 
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);    
@@ -327,7 +366,53 @@ float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
 2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
 </code></pre>
 
-<p>2. 对于引用的对象变量， block会自动增加它们的引用计数。</p>
+<p>2. 对于引用的对象变量， 它也是和上面一样处理</p>
+
+<pre><code>- (void)testObjectValue
+{
+    __weak NSString * testStr = @"test";
+    void (^strBlock)() = ^{
+        NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
+    };
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+
+        strBlock();
+    });
+}
+</code></pre>
+
+<p>在上面的示例代码中，我们使用了arc，原本<code>testStr</code>在方法结束后就要释放并且置为nil，我们用了延迟代码来执行打印<code>testStr</code>，发现它还是可以正常打印的，这说明block自动防止异步回调时空指针,当然，block会自动在结束的时候再把它释放掉，它们是不是也是通过值拷贝的方式传值？我们确认一下地址。</p>
+
+<pre><code>- (void)testObjectValue
+{
+    __weak NSString * testStr = @"test";
+    NSLog(@"address outside is %p",&amp;testStr);
+    void (^strBlock)() = ^{
+        NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
+    };
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+
+        strBlock();
+    });
+
+}
+</code></pre>
+
+<p>结果是：</p>
+
+<pre><code>2015-10-12 17:37:28.499 testBlock[1960:160556] address outside is 0x7fff58344a98
+2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
+</code></pre>
+
+<p>确实如我们所推测的那样。</p>
+
+<ol>
+<li>类实例变量</li>
+</ol>
+
+<p>block会自动增加它们的引用计数。</p>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>; <br>
