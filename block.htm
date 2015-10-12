@@ -125,7 +125,7 @@ OK，现在让我们来看一个block是怎样声明的。
      float result2 = [self getResultWithBlock:^(const int* x, int y, float z){
                return (*x + z)*y;
         }];
-中的`return (*x + z)*y;`就是我们写在block里面的回调代码，它被包含在block中一起传递给了`getResultWithBlock:`这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你自己想用来做什么。
+中的`return (*x + z)*y;`就是我们写在block里面的回调代码，它被包含在block中一起传递给了`getResultWithBlock:`这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你的需求和设计。
 
 ##内存管理
 block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
@@ -281,7 +281,7 @@ aBlock = ^(const int * x, int y, float z){
     }];
 </code></pre>
 
-<p>中的<code>return (*x + z)*y;</code>就是我们写在block里面的回调代码，它被包含在block中一起传递给了<code>getResultWithBlock:</code>这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你自己想用来做什么。</p>
+<p>中的<code>return (*x + z)*y;</code>就是我们写在block里面的回调代码，它被包含在block中一起传递给了<code>getResultWithBlock:</code>这个接口，而这个接口调用执行了我们传过去的block。如果我们并不想立即执行 block中的代码，而是比如等某些事情发生后：下载完成，延时5s，我们就可以通过GCD或NSOperationQueue把它发配到异步线程中去等待执行。block既可以当作一个普通的selector，也可当作delegate，这取决你的需求和设计。</p>
 
 <h2 id="">内存管理</h2>
 
