@@ -197,11 +197,39 @@ block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
 
     2015-10-12 17:37:28.499 testBlock[1960:160556] address outside is 0x7fff58344a98
     2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
-确实如我们所推测的那样。
-
+确实如我们所推测的那样。  
 3. 类实例变量
 
-block会自动增加它们的引用计数。
+我们先修改一下它的定义：
+
+    @interface ViewController ()
+    {
+        NSString * testStr ;
+    }
+修改下上面的方法：
+
+    - (void)testObjectValue
+    {
+        testStr = @"test";
+        NSLog(@"address outside is %p",&testStr);
+        void (^strBlock)() = ^{
+            NSLog(@"value is %@, address is %p",testStr,(&testStr));
+        };
+        
+        dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+        
+            strBlock();
+        });
+    }
+
+结果是：  
+
+    2015-10-12 17:47:24.084 testBlock[1990:164387] address outside is 0x7f8bd964cef0
+    2015-10-12 17:47:25.085 testBlock[1990:164387] value is test, address is 0x7f8bd964cef0
+
+地址是一模一样的，说明block会自动增加它们的引用计数。那么这里有就个坑了，如果该block作为该类的属性，那么它必然等`[self dealloc]`执行时才能释放掉，而如果该block里面又引用有self,那它们就构成了互相等待死锁－－retain-cycle。我们在这种情况下一定要小心，找一个合适的地方，手动把`self.block = nil;`加上去，手动破坏这个cycle。
+
+如果这个block不被自己持有，那就无所谓了，让持有它的人去释放吧。
 
 推荐文章 ：  
 [官方文档](https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1);    
@@ -406,13 +434,43 @@ float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
 2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
 </code></pre>
 
-<p>确实如我们所推测的那样。</p>
+<p>确实如我们所推测的那样。 <br>
+3. 类实例变量</p>
 
-<ol>
-<li>类实例变量</li>
-</ol>
+<p>我们先修改一下它的定义：</p>
 
-<p>block会自动增加它们的引用计数。</p>
+<pre><code>@interface ViewController ()
+{
+    NSString * testStr ;
+}
+</code></pre>
+
+<p>修改下上面的方法：</p>
+
+<pre><code>- (void)testObjectValue
+{
+    testStr = @"test";
+    NSLog(@"address outside is %p",&amp;testStr);
+    void (^strBlock)() = ^{
+        NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
+    };
+
+    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+
+        strBlock();
+    });
+}
+</code></pre>
+
+<p>结果是：  </p>
+
+<pre><code>2015-10-12 17:47:24.084 testBlock[1990:164387] address outside is 0x7f8bd964cef0
+2015-10-12 17:47:25.085 testBlock[1990:164387] value is test, address is 0x7f8bd964cef0
+</code></pre>
+
+<p>地址是一模一样的，说明block会自动增加它们的引用计数。那么这里有就个坑了，如果该block作为该类的属性，那么它必然等<code>[self dealloc]</code>执行时才能释放掉，而如果该block里面又引用有self,那它们就构成了互相等待死锁－－retain-cycle。我们在这种情况下一定要小心，找一个合适的地方，手动把<code>self.block = nil;</code>加上去，手动破坏这个cycle。</p>
+
+<p>如果这个block不被自己持有，那就无所谓了，让持有它的人去释放吧。</p>
 
 <p>推荐文章 ： <br>
 <a href="https://developer.apple.com/library/prerelease/tvos/documentation/General/Conceptual/DevPedia-CocoaCore/Block.html#//apple_ref/doc/uid/TP40008195-CH3-SW1">官方文档</a>; <br>
