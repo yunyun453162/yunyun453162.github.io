@@ -43,7 +43,7 @@
 
 
 OK，现在让我们来看一个block是怎样声明的。  
-##基本语法
+##基本语法-变量定义
    
     float (^aBlock)(const int*, int, float);  
  
@@ -68,7 +68,7 @@ OK，现在让我们来看一个block是怎样声明的。
             
             return (*x + y)*z;
         };
-
+###调用
 我们再加上调用过程：  
 
     float (^aBlock)(const int*, int, float);
@@ -187,7 +187,7 @@ continue do other thing
 
 <p>OK，现在让我们来看一个block是怎样声明的。  </p>
 
-<h2 id="">基本语法</h2>
+<h2 id="">基本语法-变量定义</h2>
 
 <pre><code>float (^aBlock)(const int*, int, float);  
 </code></pre>
@@ -216,6 +216,8 @@ aBlock = ^(const int * x, int y, float z){
         return (*x + y)*z;
     };
 </code></pre>
+
+<h3 id="">调用</h3>
 
 <p>我们再加上调用过程：  </p>
 
