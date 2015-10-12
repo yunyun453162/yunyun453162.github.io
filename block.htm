@@ -70,6 +70,11 @@ OK，现在让我们来看一个block是怎样声明的。
             
             return (*x + y)*z;
         };
+如果我们把返回值，参数全部去掉-无参无返回值：  
+
+    void(^Blcok)(void) = ^{
+        //do something
+    };
 
 <!--<a href="">调用</a> -->
 <div style = "color:#E93071">调用</div>
@@ -161,7 +166,8 @@ block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
     } 
     2015-09-23 17:50:34.274 testBlock[3653:153851] a is 7
     2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
-2. 对于引用的对象变量， 它也是和上面一样处理
+
+2. 对于引用的对象变量， 它有点微妙的差别
 
     - (void)testObjectValue
     {
@@ -190,14 +196,14 @@ block看着很美丽，但在使用过程中还是有无数的陷阱在等你。
         
             strBlock();
         });
-        
     }
 
 结果是：
 
     2015-10-12 17:37:28.499 testBlock[1960:160556] address outside is 0x7fff58344a98
     2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
-确实如我们所推测的那样。  
+确实如我们所推测的那样,但如果你把`__weak`去掉，你就又会发现一个有趣的现象，它们的地址是一样的，block对该对象进行了强引了防止空指针，不妨自己验证一下。
+ 
 3. 类实例变量
 
 我们先修改一下它的定义：
@@ -288,6 +294,13 @@ aBlock = ^(const int * x, int y, float z){
 
         return (*x + y)*z;
     };
+</code></pre>
+
+<p>如果我们把返回值，参数全部去掉-无参无返回值：  </p>
+
+<pre><code>void(^Blcok)(void) = ^{
+    //do something
+};
 </code></pre>
 
 <!--<a href="">调用</a> -->
@@ -394,39 +407,40 @@ float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
 2015-09-23 17:50:34.275 testBlock[3653:153851] reuslt is 119.000000,a is 7
 </code></pre>
 
-<p>2. 对于引用的对象变量， 它也是和上面一样处理</p>
+<ol>
+<li><p>对于引用的对象变量， 它有点微妙的差别</p>
 
-<pre><code>- (void)testObjectValue
+<ul><li><p>(void)testObjectValue
 {
-    __weak NSString * testStr = @"test";
-    void (^strBlock)() = ^{
-        NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
-    };
+__weak NSString * testStr = @"test";
+void (^strBlock)() = ^{
+    NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
+};</p>
 
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
+<p>dispatch<em>after(dispatch</em>time(DISPATCH<em>TIME</em>NOW, NSEC<em>PER</em>SEC), dispatch<em>get</em>main_queue(), ^{</p>
 
-        strBlock();
-    });
-}
+<pre><code>strBlock();
 </code></pre>
 
-<p>在上面的示例代码中，我们使用了arc，原本<code>testStr</code>在方法结束后就要释放并且置为nil，我们用了延迟代码来执行打印<code>testStr</code>，发现它还是可以正常打印的，这说明block自动防止异步回调时空指针,当然，block会自动在结束的时候再把它释放掉，它们是不是也是通过值拷贝的方式传值？我们确认一下地址。</p>
-
-<pre><code>- (void)testObjectValue
-{
-    __weak NSString * testStr = @"test";
-    NSLog(@"address outside is %p",&amp;testStr);
-    void (^strBlock)() = ^{
-        NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
-    };
-
-    dispatch_after(dispatch_time(DISPATCH_TIME_NOW, NSEC_PER_SEC), dispatch_get_main_queue(), ^{
-
-        strBlock();
-    });
-
+<p>});
 }
+在上面的示例代码中，我们使用了arc，原本<code>testStr</code>在方法结束后就要释放并且置为nil，我们用了延迟代码来执行打印<code>testStr</code>，发现它还是可以正常打印的，这说明block自动防止异步回调时空指针,当然，block会自动在结束的时候再把它释放掉，它们是不是也是通过值拷贝的方式传值？我们确认一下地址。</p></li>
+<li><p>(void)testObjectValue
+{
+__weak NSString * testStr = @"test";
+NSLog(@"address outside is %p",&amp;testStr);
+void (^strBlock)() = ^{
+    NSLog(@"value is %@, address is %p",testStr,(&amp;testStr));
+};</p>
+
+<p>dispatch<em>after(dispatch</em>time(DISPATCH<em>TIME</em>NOW, NSEC<em>PER</em>SEC), dispatch<em>get</em>main_queue(), ^{</p>
+
+<pre><code>strBlock();
 </code></pre>
+
+<p>});
+}</p></li></ul></li>
+</ol>
 
 <p>结果是：</p>
 
@@ -434,8 +448,11 @@ float (^aBlock)(const int*, int, float) = ^(const int * x, int y, float z){
 2015-10-12 17:37:29.589 testBlock[1960:160556] value is test, address is 0x7f871ac19c60
 </code></pre>
 
-<p>确实如我们所推测的那样。 <br>
-3. 类实例变量</p>
+<p>确实如我们所推测的那样,但如果你把<code>__weak</code>去掉，你就又会发现一个有趣的现象，它们的地址是一样的，block对该对象进行了强引了防止空指针，不妨自己验证一下。</p>
+
+<ol>
+<li>类实例变量</li>
+</ol>
 
 <p>我们先修改一下它的定义：</p>
 
