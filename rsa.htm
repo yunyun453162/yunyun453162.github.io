@@ -27,7 +27,7 @@
 <!-- markdown -->
 在网络越来越发达的今天，安全也早已不仅仅是国家银行才关注的焦点，大家的生活越来越依赖于网络，在网上交易，上传下载私人资料，用网络办公等等，鉴于网络的开放性，任何人都可以拦截我们的数据包，并进行解析破解，而客户端中的本地数据，具有先天性的缺陷。软件对人们来说已经不再如以往那般神秘，一些简单的手段已经无法确保我们的数据安全，对资料的加密非常重要。
 
-#加密
+##加密
 
 通常情况下，我们用一些只有自己知道的数据来对要加密的原始数据进行一些复杂的数学运算，得到加密后的数据，这个过程称之为加密，而那个只有我们知道的用来加密的数据称之为密钥。
 
@@ -45,9 +45,8 @@
         （4）乙方用私钥对数据进行签名，甲方用公钥进行验证。
 
 
-##RSA对称加密  
+##制作证书  
 
-制作自签名的证书  
 1. 最简单快捷的方法，打开Terminal，使用openssl（Mac OS X自带）生成私钥和自签名的x509证书。  
 
     openssl req -x509 -out public_key.der -outform der -new -newkey rsa:1024 -keyout private_key.pem -days 3650
@@ -73,16 +72,24 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 ![信息](img/companyInfo.png)
 
 3)自签署根证书  
-    openssl x509 -req -in cert.csr -out public_key.der -outform der -signkey private_key.pem -days 3650
-我们的公钥证书生成了
+   
+     openssl x509 -req -in cert.csr -out public_key.der -outform der -signkey private_key.pem -days 3650
 
-RSA密钥生成命令
-生成RSA私钥
-openssl>genrsa -out rsa_private_key.pem 1024
+我们的IOS专用公钥证书生成了。
+
+不过如果我们要用openssl或给服务器和安卓的同学的话，就不能用这个x509证书了，而是用下面的RSA密钥生成命令：  
+
+生成RSA私钥  
+
+    openssl>genrsa -out rsa_private_key.pem 1024
 生成RSA公钥
-openssl>rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
+
+    openssl>rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
 将RSA私钥转换成PKCS8格式
-openssl>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
+
+    openssl>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
+把我们的生成的pem证书传给他们吧。
+
 
 
 
@@ -94,7 +101,7 @@ openssl>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
 <!-- content -->
 <p>在网络越来越发达的今天，安全也早已不仅仅是国家银行才关注的焦点，大家的生活越来越依赖于网络，在网上交易，上传下载私人资料，用网络办公等等，鉴于网络的开放性，任何人都可以拦截我们的数据包，并进行解析破解，而客户端中的本地数据，具有先天性的缺陷。软件对人们来说已经不再如以往那般神秘，一些简单的手段已经无法确保我们的数据安全，对资料的加密非常重要。</p>
 
-<h1 id="">加密</h1>
+<h2 id="">加密</h2>
 
 <p>通常情况下，我们用一些只有自己知道的数据来对要加密的原始数据进行一些复杂的数学运算，得到加密后的数据，这个过程称之为加密，而那个只有我们知道的用来加密的数据称之为密钥。</p>
 
@@ -112,13 +119,13 @@ openssl>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
 </code></pre></li>
 </ol>
 
-<h2 id="rsa">RSA对称加密</h2>
+<h2 id="">制作证书</h2>
 
-<p>制作自签名的证书 <br>
-1. 最简单快捷的方法，打开Terminal，使用openssl（Mac OS X自带）生成私钥和自签名的x509证书。  </p>
+<ol>
+<li><p>最简单快捷的方法，打开Terminal，使用openssl（Mac OS X自带）生成私钥和自签名的x509证书。  </p>
 
-<pre><code>openssl req -x509 -out public_key.der -outform der -new -newkey rsa:1024 -keyout private_key.pem -days 3650
-</code></pre>
+<p>openssl req -x509 -out public<em>key.der -outform der -new -newkey rsa:1024 -keyout private</em>key.pem -days 3650</p></li>
+</ol>
 
 <p>按照命令行的提示输入内容就行了。 <br>
 几个说明： <br>
@@ -144,17 +151,31 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 <p>这个过程中我们需在填写一些信息： <br>
 <img src="img/companyInfo.png" alt="信息" title=""></p>
 
-<p>3)自签署根证书 <br>
-    openssl x509 -req -in cert.csr -out public<em>key.der -outform der -signkey private</em>key.pem -days 3650
-我们的公钥证书生成了</p>
+<p>3)自签署根证书  </p>
 
-<p>RSA密钥生成命令
-生成RSA私钥
-openssl&gt;genrsa -out rsa<em>private</em>key.pem 1024
-生成RSA公钥
-openssl&gt;rsa -in rsa<em>private</em>key.pem -pubout -out rsa<em>public</em>key.pem
-将RSA私钥转换成PKCS8格式
-openssl&gt;pkcs8 -topk8 -inform PEM -in rsa<em>private</em>key.pem -outform PEM -nocrypt</p>
+<pre><code> openssl x509 -req -in cert.csr -out public_key.der -outform der -signkey private_key.pem -days 3650
+</code></pre>
+
+<p>我们的IOS专用公钥证书生成了。</p>
+
+<p>不过如果我们要用openssl或给服务器和安卓的同学的话，就不能用这个x509证书了，而是用下面的RSA密钥生成命令：  </p>
+
+<p>生成RSA私钥  </p>
+
+<pre><code>openssl&gt;genrsa -out rsa_private_key.pem 1024
+</code></pre>
+
+<p>生成RSA公钥</p>
+
+<pre><code>openssl&gt;rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
+</code></pre>
+
+<p>将RSA私钥转换成PKCS8格式</p>
+
+<pre><code>openssl&gt;pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
+</code></pre>
+
+<p>把我们的生成的pem证书传给他们吧。</p>
 <!-- content end -->
 </div>
 <br>
