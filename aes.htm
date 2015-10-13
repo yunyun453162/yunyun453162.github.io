@@ -167,7 +167,16 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
         return nil;
     }
 
-我把上面写来的两个方法
+##使用
+上面的方法改成类方法是不是更好些？算了，看的人可以自己试试。  
+我把上面的东西填到一个叫`StringEncryption`类中,并建一个singleView项目来测试一下下。
+
+我们先在StoryBoard中选中xcode生的成类ViewController,在上面加几个控件：  
+![一个label和两个button](imgs/AES-demo-sb.png);  
+
+再去`ViewController.m`中添加相应的代码，并把它们对应起来；
+
+
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -324,7 +333,15 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 }
 </code></pre>
 
-<p>我把上面写来的两个方法</p>
+<h2 id="">使用</h2>
+
+<p>上面的方法改成类方法是不是更好些？算了，看的人可以自己试试。 <br>
+我把上面的东西填到一个叫<code>StringEncryption</code>类中,并建一个singleView项目来测试一下下。</p>
+
+<p>我们先在StoryBoard中选中xcode生的成类ViewController,在上面加几个控件： <br>
+<img src="imgs/AES-demo-sb.png" alt="一个label和两个button" title="">;  </p>
+
+<p>再去<code>ViewController.m</code>中添加相应的代码，并把它们对应起来；</p>
 <!-- content end -->
 </div>
 <br>
