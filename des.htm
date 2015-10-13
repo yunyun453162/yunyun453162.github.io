@@ -1,0 +1,292 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="Keywords" content="blog"/>
+    <meta name="Description" content="blog"/>
+    <title>Simple</title>
+    <link rel="shortcut icon" href="/static/favicon.png"/>
+    <link rel="stylesheet" type="text/css" href="/main.css" />
+</head>
+<body>
+<div class="main">
+    <div class="header">
+    	<ul id="pages">
+            <li><a href="/">home</a></li>
+            <li><a href="/#/tags">tags</a></li>
+            <li><a href="/#/archive">archive</a></li>
+    	</ul>
+    </div>
+	<div class="wrap-header">
+	<h1>
+    <a href="/" id="title"></a>
+	</h1>
+	</div>
+<div id="md" style="display: none;">
+<!-- markdown -->
+##RSA 的局限性
+在上一篇中我们了解了下当前非常流行并且可靠的加密算法RSA,RSA的安全性目前来说最佳的选择。但是，RSA它受限于密钥长度和加密复杂度。它单次只能加密和密钥等长数据，而且随着密钥长度增加，计算复杂度指数增大，非常的耗时和费CPU。
+
+怎么办呢？我们还是得回到我们的对称加密中来。  
+
+1. 我们每次随机生成一个复杂的对称密钥，并用它来加密我们的大数据。
+2. 我们用rsa对我们的长密钥进行加密，把它和加密后的数据拼接在一起
+
+3. 将组装好的密文一起发给通信方，通信方先取出密钥部分数据RSA解密，然后用解出来的密钥对剩余数据解密。
+
+
+RSA的使用这里我们就不讨论了，我们选一个常用对称加密算来进行讲解－AES
+##AES
+
+AES是一种对称加密算法，它是用密钥对块数据进行加密的，它的密钥有三种长度:128位，192位和256位。
+
+    enum {
+        kCCKeySizeAES128          = 16,
+        kCCKeySizeAES192          = 24,
+        kCCKeySizeAES256          = 32,
+        ...
+    };
+AES还需一个密钥向量与之来配合，默认是16位的0。在我们使用的时候要注意密钥和向量的长度需要满足以上三种情况之一，但不要求密钥和向量一样长，也就是说我们可以用一个256位的密钥`(key)`,而用一个128位的密钥向量`(iv)`。
+
+它有两种填充模式：  
+ 
+    enum {
+        /* options for block ciphers */
+        kCCOptionPKCS7Padding   = 0x0001,
+        kCCOptionECBMode        = 0x0002
+        /* stream ciphers currently have no options */
+    };
+
+一般我们用kCCOptionPKCS7Padding，不过和Android那边统一还有点工作要做的。
+
+
+我们在加密文件中对外提供以下两个接口：  
+
+    -  (NSData *)encrypt:(NSData *)plainText key:(NSString *)key iv:(NSString *)iv;
+    -  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
+并引入加密头文件：  
+
+    #import <CommonCrypto/CommonDigest.h>
+    #import <CommonCrypto/CommonCryptor.h>
+
+再在`.m`文件中实现这两个接口：
+在这个代码例子中，我们的key是256位的，超过的会被截断，而向量iv则是128位的。
+
+    - (NSData *)encrypt:(NSData *)plainText key:(NSString *)key  iv:(NSString *)iv {
+        char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+        ivPointer[kCCBlockSizeAES128+2];
+        BOOL patchNeeded;
+        bzero(keyPointer, sizeof(keyPointer)); // fill with zeroes for padding
+        patchNeeded= ([key length] > kCCKeySizeAES256+1);
+        if(patchNeeded)
+        {
+            NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+            key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+        }
+        
+        [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+        [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+        
+        if (patchNeeded) {
+            keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+        }
+        
+        NSUInteger dataLength = [plainText length];
+        
+        //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+        // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+        size_t buffSize = dataLength + kCCBlockSizeAES128;
+        void *buff = malloc(buffSize);
+        
+        size_t numBytesEncrypted = 0;
+        //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+        //for details on this function
+        //Stateless, one-shot encrypt or decrypt operation.
+        CCCryptorStatus status = CCCrypt(kCCEncrypt, /* kCCEncrypt, etc. */
+                                         kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                         kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                         keyPointer, kCCKeySizeAES256, /* key and its length */
+                                         ivPointer, /* initialization vector - use random IV everytime */
+                                         [plainText bytes], [plainText length], /* input  */
+                                         buff, buffSize,/* data RETURNED here */
+                                         &numBytesEncrypted);
+        if (status == kCCSuccess) {
+            return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        }
+        
+        free(buff);
+        return nil;
+    }
+
+--- -
+    -(NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv {
+        char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+        ivPointer[kCCBlockSizeAES128+2];
+        BOOL patchNeeded;
+      
+        patchNeeded = ([key length] > kCCKeySizeAES256+1);
+        if(patchNeeded)
+        {
+            NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+            key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+        }
+
+        [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+        [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+
+        if (patchNeeded) {
+            keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+        }
+        
+        NSUInteger dataLength = [encryptedText length];
+        
+        //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+        // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+        size_t buffSize = dataLength + kCCBlockSizeAES128;
+        
+        void *buff = malloc(buffSize);
+        
+        size_t numBytesEncrypted = 0;
+        //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+        //for details on this function
+        //Stateless, one-shot encrypt or decrypt operation.
+        CCCryptorStatus status = CCCrypt(kCCDecrypt,/* kCCEncrypt, etc. */
+                                         kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                         kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                         keyPointer, kCCKeySizeAES256,/* key and its length */
+                                         ivPointer, /* initialization vector - use same IV which was used for decryption */
+                                         [encryptedText bytes], [encryptedText length], //input
+                                         buff, buffSize,//output
+                                         &numBytesEncrypted);
+        if (status == kCCSuccess) {
+            return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        }
+        
+        free(buff);
+        return nil;
+    }
+
+##使用
+上面的方法改成类方法是不是更好些？算了，看的人可以自己试试。  
+我把上面的东西填到一个叫`StringEncryption`类中,并建一个singleView项目来测试一下下。
+
+我们先在StoryBoard中选中xcode生的成类ViewController,在上面加几个控件：  
+![一个label和两个button](imgs/AES-demo-sb.png)  
+
+再去`ViewController.m`中添加相应的代码，并把它们对应起来：
+
+    @interface ViewController (){
+        IBOutlet UILabel * testLable;
+    }
+
+加密过程是先将字符转成NSData类型数据，然后对data加密，因为加密后的数据丢失编码信息，故需先转成base64后才能转成字符。
+
+    - (IBAction)encrypt:(id)sender
+    {
+        StringEncryption * encrypt  = [[StringEncryption alloc] init];
+        NSString * text = testLable.text;
+        NSData * data = [text dataUsingEncoding:NSUTF8StringEncoding];
+        data = [encrypt encrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+        
+        data = [data base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+         NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        testLable.text = string;
+    }
+
+解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密
+
+    - (IBAction)decrypt:(id)sender
+    {
+        NSString * text = testLable.text;
+        NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        
+        NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        StringEncryption * encrypt  = [[StringEncryption alloc] init];
+        data = [encrypt decrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+        
+        string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        testLable.text = string;
+    }
+
+OK！是不是蛮简单的，跑起来运行一下试试。
+>注：千万要注意密钥和向量的长度要和方法里面的一一对应起来哦！
+
+<!-- markdown end -->
+</div>
+<div class="entry" id="main">
+<!-- content -->
+
+<!-- content end -->
+</div>
+<br>
+<br>
+    <div id="disqus_thread"></div>
+	<div class="footer">
+		<p>© Copyright 2015 by Kobe, Designed by Kobe</p>
+	</div>
+</div>
+<script src="main.js"></script>
+<script id="content" type="text/mustache">
+    <h1>{{title}}</h1>
+    <div class="tag">
+    {{date}}
+    {{#tags}}
+    <a href="/#/tag/{{name}}">#{{name}}</a>
+    {{/tags}}
+    </div>
+</script>
+<script id="pagesTemplate" type="text/mustache">
+    {{#pages}}
+    <li>
+        <a href="{{path}}">{{title}}</a>
+    </li>
+    {{/pages}}
+</script>
+<script>
+$(document).ready(function() {
+    $.ajax({
+        url: "main.json",
+        type: "GET",
+        dataType: "json",
+        success: function(data) {
+            $("#title").html(data.name);
+            var pagesTemplate = Hogan.compile($("#pagesTemplate").html());
+            var pagesHtml = pagesTemplate.render({"pages": data.pages});
+            $("#pages").append(pagesHtml);
+            //path
+            var path = "des.htm";
+            //path end
+            var now = 0;
+            for (var i = 0; i < data.posts.length; ++i)
+                if (path == data.posts[i].path)
+                    now = i;
+            var post = data.posts[now];
+            var tmp = post.tags.split(" ");
+            var tags = [];
+            for (var i = 0; i < tmp.length; ++i)
+                if (tmp[i].length > 0)
+                    tags.push({"name": tmp[i]});
+            var contentTemplate = Hogan.compile($("#content").html());
+            var contentHtml = contentTemplate.render({"title": post.title, "tags": tags, "date": post.date});
+            $("#main").prepend(contentHtml);
+            if (data.disqus_shortname.length > 0) {
+                var disqus_shortname = data.disqus_shortname;
+                (function() {
+                    var dsq = document.createElement('script'); dsq.type = 'text/javascript'; dsq.async = true;
+                    dsq.src = '//' + disqus_shortname + '.disqus.com/embed.js';
+                    (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+                })();
+            }
+        }
+    });
+});
+</script>
+<script src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+<script type="text/x-mathjax-config">
+    MathJax.Hub.Config({tex2jax: {inlineMath: [['$','$'], ["\\(", "\\)"]], processEscapes: true}});
+</script>
+</body>
+</html>
