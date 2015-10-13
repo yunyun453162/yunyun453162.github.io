@@ -180,6 +180,8 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
         IBOutlet UILabel * testLable;
     }
 
+加密过程是先将字符转成NSData类型数据，然后对data加密，因为加密后的数据丢失编码信息，故需先转成base64后才能转成字符。
+
     - (IBAction)encrypt:(id)sender
     {
         StringEncryption * encrypt  = [[StringEncryption alloc] init];
@@ -193,6 +195,7 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
         testLable.text = string;
     }
 
+解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密
     - (IBAction)decrypt:(id)sender
     {
         NSString * text = testLable.text;
@@ -209,7 +212,6 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 
 OK！是不是蛮简单的，跑起来运行一下试试。
 >注：千万要注意密钥和向量的长度要和方法里面的一一对应起来哦！
-
 
 <!-- markdown end -->
 </div>
@@ -380,8 +382,11 @@ OK！是不是蛮简单的，跑起来运行一下试试。
 <pre><code>@interface ViewController (){
     IBOutlet UILabel * testLable;
 }
+</code></pre>
 
-- (IBAction)encrypt:(id)sender
+<p>加密过程是先将字符转成NSData类型数据，然后对data加密，因为加密后的数据丢失编码信息，故需先转成base64后才能转成字符。</p>
+
+<pre><code>- (IBAction)encrypt:(id)sender
 {
     StringEncryption * encrypt  = [[StringEncryption alloc] init];
     NSString * text = testLable.text;
@@ -393,13 +398,15 @@ OK！是不是蛮简单的，跑起来运行一下试试。
      NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     testLable.text = string;
 }
+</code></pre>
 
-- (IBAction)decrypt:(id)sender
-{
-    NSString * text = testLable.text;
-    NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];
+<p>解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密
+    - (IBAction)decrypt:(id)sender
+    {
+        NSString * text = testLable.text;
+        NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];</p>
 
-    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+<pre><code>    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     StringEncryption * encrypt  = [[StringEncryption alloc] init];
     data = [encrypt decrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
 
