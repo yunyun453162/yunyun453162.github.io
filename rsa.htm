@@ -79,13 +79,13 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 
 不过如果我们要用openssl或给服务器和安卓的同学的话，就不能用这个x509证书了，而是用下面的RSA密钥生成命令：  
 
-生成RSA私钥  
+1. 生成RSA私钥  
 
     openssl>genrsa -out rsa_private_key.pem 1024
-生成RSA公钥
+2. 生成RSA公钥
 
     openssl>rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
-将RSA私钥转换成PKCS8格式
+3. 将RSA私钥转换成PKCS8格式
 
     openssl>pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
 把我们的生成的pem证书传给他们吧。
@@ -160,22 +160,18 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 
 <p>不过如果我们要用openssl或给服务器和安卓的同学的话，就不能用这个x509证书了，而是用下面的RSA密钥生成命令：  </p>
 
-<p>生成RSA私钥  </p>
+<ol>
+<li><p>生成RSA私钥  </p>
 
-<pre><code>openssl&gt;genrsa -out rsa_private_key.pem 1024
-</code></pre>
+<p>openssl&gt;genrsa -out rsa<em>private</em>key.pem 1024</p></li>
+<li><p>生成RSA公钥</p>
 
-<p>生成RSA公钥</p>
+<p>openssl&gt;rsa -in rsa<em>private</em>key.pem -pubout -out rsa<em>public</em>key.pem</p></li>
+<li><p>将RSA私钥转换成PKCS8格式</p>
 
-<pre><code>openssl&gt;rsa -in rsa_private_key.pem -pubout -out rsa_public_key.pem
-</code></pre>
-
-<p>将RSA私钥转换成PKCS8格式</p>
-
-<pre><code>openssl&gt;pkcs8 -topk8 -inform PEM -in rsa_private_key.pem -outform PEM -nocrypt
-</code></pre>
-
-<p>把我们的生成的pem证书传给他们吧。</p>
+<p>openssl&gt;pkcs8 -topk8 -inform PEM -in rsa<em>private</em>key.pem -outform PEM -nocrypt
+把我们的生成的pem证书传给他们吧。</p></li>
+</ol>
 <!-- content end -->
 </div>
 <br>
