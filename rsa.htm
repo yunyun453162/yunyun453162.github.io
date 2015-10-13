@@ -93,9 +93,89 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 
 ##IOS下RSA加密
 
+1. 加载公钥  
 
+        - (void)getPublicKey
+        {
+            
+            NSBundle* frameworkBundle = [[FMAppConfig sharedInstance] frameworkBundle];
+            NSString *publicKeyPath = [frameworkBundle pathForResource:@“public_key”
+                                                                ofType:@"der"];
+            if (publicKeyPath == nil) {
+                //NSLog(@"Can not find public_key.der");
+                return nil;
+            }
+            
+            NSData *publicKeyFileContent = [NSData dataWithContentsOfFile:publicKeyPath];
+            if (publicKeyFileContent == nil) {
+                //NSLog(@"Can not read from pub.der");
+                return nil;
+            }
+            
+            certificate = SecCertificateCreateWithData(kCFAllocatorDefault, ( __bridge CFDataRef) publicKeyFileContent);
+            if (certificate == nil) {
+                //NSLog(@"Can not read certificate from pub.der");
+                return nil;
+            }
+            
+            policy = SecPolicyCreateBasicX509();
+            OSStatus returnCode = SecTrustCreateWithCertificates(certificate, policy, &trust);
+            if (returnCode != 0) {
+                //NSLog(@"SecTrustCreateWithCertificates fail. Error Code: %ld", returnCode);
+                return nil;
+            }
+            
+            SecTrustResultType trustResultType;
+            returnCode = SecTrustEvaluate(trust, &trustResultType);
+            if (returnCode != 0) {
+                //NSLog(@"SecTrustEvaluate fail. Error Code: %ld", returnCode);
+                return nil;
+            }
+            
+            publicKey = SecTrustCopyPublicKey(trust);
+            if (publicKey == nil) {
+                //NSLog(@"SecTrustCopyPublicKey fail");
+                return nil;
+            }
+            
+            //maxPlainLen is a var in the class,it limit the max data length to be encrypted by once
+            //maxPlainLen = SecKeyGetBlockSize(publicKey) - 12;
+        }
 
+2. 加密
 
+        - (NSData *)encryptWithShortData:(NSData *)content
+        {
+            size_t plainLen = [content length];
+            if (plainLen > maxPlainLen) {
+                //NSLog(@"content(%ld) is too long, must < %ld", plainLen, maxPlainLen);
+                return nil;
+            }
+            
+            void *plain = malloc(plainLen);
+            [content getBytes:plain
+                       length:plainLen];
+            
+            size_t cipherLen = 128; // 当前RSA的密钥长度是128字节
+            void *cipher = malloc(cipherLen);
+            
+            OSStatus returnCode = SecKeyEncrypt(publicKey, kSecPaddingPKCS1, plain,
+                                                plainLen, cipher, &cipherLen);
+            
+            NSData *result = nil;
+            if (returnCode != 0) {
+                //NSLog(@"SecKeyEncrypt fail. Error Code: %ld", returnCode);
+            }
+            else {
+                result = [NSData dataWithBytes:cipher
+                                        length:cipherLen];
+            }
+            
+            free(plain);
+            free(cipher);
+            
+            return result;
+        }
 
 <!-- markdown end -->
 </div>
@@ -176,6 +256,110 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 </ol>
 
 <h2 id="iosrsa">IOS下RSA加密</h2>
+
+<ol>
+<li><p>加载公钥  </p>
+
+<pre><code>- (void)getPublicKey
+{
+
+
+<pre><code>NSBundle* frameworkBundle = [[FMAppConfig sharedInstance] frameworkBundle];
+NSString *publicKeyPath = [frameworkBundle pathForResource:@“public_key”
+                                                    ofType:@"der"];
+if (publicKeyPath == nil) {
+    //NSLog(@"Can not find public_key.der");
+    return nil;
+}
+
+
+NSData *publicKeyFileContent = [NSData dataWithContentsOfFile:publicKeyPath];
+if (publicKeyFileContent == nil) {
+    //NSLog(@"Can not read from pub.der");
+    return nil;
+}
+
+
+certificate = SecCertificateCreateWithData(kCFAllocatorDefault, ( __bridge CFDataRef) publicKeyFileContent);
+if (certificate == nil) {
+    //NSLog(@"Can not read certificate from pub.der");
+    return nil;
+}
+
+
+policy = SecPolicyCreateBasicX509();
+OSStatus returnCode = SecTrustCreateWithCertificates(certificate, policy, &amp;amp;trust);
+if (returnCode != 0) {
+    //NSLog(@"SecTrustCreateWithCertificates fail. Error Code: %ld", returnCode);
+    return nil;
+}
+
+
+SecTrustResultType trustResultType;
+returnCode = SecTrustEvaluate(trust, &amp;amp;trustResultType);
+if (returnCode != 0) {
+    //NSLog(@"SecTrustEvaluate fail. Error Code: %ld", returnCode);
+    return nil;
+}
+
+
+publicKey = SecTrustCopyPublicKey(trust);
+if (publicKey == nil) {
+    //NSLog(@"SecTrustCopyPublicKey fail");
+    return nil;
+}
+
+
+//maxPlainLen is a var in the class,it limit the max data length to be encrypted by once
+//maxPlainLen = SecKeyGetBlockSize(publicKey) - 12;
+</code></pre>
+
+}
+</code></pre></li>
+<li><p>加密</p>
+
+<pre><code>- (NSData *)encryptWithShortData:(NSData *)content
+{
+    size_t plainLen = [content length];
+    if (plainLen &gt; maxPlainLen) {
+        //NSLog(@"content(%ld) is too long, must &lt; %ld", plainLen, maxPlainLen);
+        return nil;
+    }
+
+
+<pre><code>void *plain = malloc(plainLen);
+[content getBytes:plain
+           length:plainLen];
+
+
+size_t cipherLen = 128; // 当前RSA的密钥长度是128字节
+void *cipher = malloc(cipherLen);
+
+
+OSStatus returnCode = SecKeyEncrypt(publicKey, kSecPaddingPKCS1, plain,
+                                    plainLen, cipher, &amp;amp;cipherLen);
+
+
+NSData *result = nil;
+if (returnCode != 0) {
+    //NSLog(@"SecKeyEncrypt fail. Error Code: %ld", returnCode);
+}
+else {
+    result = [NSData dataWithBytes:cipher
+                            length:cipherLen];
+}
+
+
+free(plain);
+free(cipher);
+
+
+return result;
+</code></pre>
+
+}
+</code></pre></li>
+</ol>
 <!-- content end -->
 </div>
 <br>
