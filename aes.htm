@@ -196,6 +196,7 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
     }
 
 解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密
+
     - (IBAction)decrypt:(id)sender
     {
         NSString * text = testLable.text;
@@ -400,13 +401,14 @@ OK！是不是蛮简单的，跑起来运行一下试试。
 }
 </code></pre>
 
-<p>解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密
-    - (IBAction)decrypt:(id)sender
-    {
-        NSString * text = testLable.text;
-        NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];</p>
+<p>解密过程刚好相反，先将base64数据转成普通NSData，然后对data解密</p>
 
-<pre><code>    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+<pre><code>- (IBAction)decrypt:(id)sender
+{
+    NSString * text = testLable.text;
+    NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];
+
+    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     StringEncryption * encrypt  = [[StringEncryption alloc] init];
     data = [encrypt decrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
 
