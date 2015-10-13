@@ -172,9 +172,43 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 我把上面的东西填到一个叫`StringEncryption`类中,并建一个singleView项目来测试一下下。
 
 我们先在StoryBoard中选中xcode生的成类ViewController,在上面加几个控件：  
-![一个label和两个button](imgs/AES-demo-sb.png);  
+![一个label和两个button](imgs/AES-demo-sb.png)  
 
-再去`ViewController.m`中添加相应的代码，并把它们对应起来；
+再去`ViewController.m`中添加相应的代码，并把它们对应起来：
+
+    @interface ViewController (){
+        IBOutlet UILabel * testLable;
+    }
+
+    - (IBAction)encrypt:(id)sender
+    {
+        StringEncryption * encrypt  = [[StringEncryption alloc] init];
+        NSString * text = testLable.text;
+        NSData * data = [text dataUsingEncoding:NSUTF8StringEncoding];
+        data = [encrypt encrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+        
+        data = [data base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
+        
+         NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        testLable.text = string;
+    }
+
+    - (IBAction)decrypt:(id)sender
+    {
+        NSString * text = testLable.text;
+        NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];
+        
+        NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        StringEncryption * encrypt  = [[StringEncryption alloc] init];
+        data = [encrypt decrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+        
+        string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+        
+        testLable.text = string;
+    }
+
+OK！是不是蛮简单的，跑起来运行一下试试。
+>注：千万要注意密钥和向量的长度要和方法里面的一一对应起来哦！
 
 
 <!-- markdown end -->
@@ -339,9 +373,47 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 我把上面的东西填到一个叫<code>StringEncryption</code>类中,并建一个singleView项目来测试一下下。</p>
 
 <p>我们先在StoryBoard中选中xcode生的成类ViewController,在上面加几个控件： <br>
-<img src="imgs/AES-demo-sb.png" alt="一个label和两个button" title="">;  </p>
+<img src="imgs/AES-demo-sb.png" alt="一个label和两个button" title="">  </p>
 
-<p>再去<code>ViewController.m</code>中添加相应的代码，并把它们对应起来；</p>
+<p>再去<code>ViewController.m</code>中添加相应的代码，并把它们对应起来：</p>
+
+<pre><code>@interface ViewController (){
+    IBOutlet UILabel * testLable;
+}
+
+- (IBAction)encrypt:(id)sender
+{
+    StringEncryption * encrypt  = [[StringEncryption alloc] init];
+    NSString * text = testLable.text;
+    NSData * data = [text dataUsingEncoding:NSUTF8StringEncoding];
+    data = [encrypt encrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+
+    data = [data base64EncodedDataWithOptions:NSDataBase64Encoding64CharacterLineLength];
+
+     NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    testLable.text = string;
+}
+
+- (IBAction)decrypt:(id)sender
+{
+    NSString * text = testLable.text;
+    NSData * data = [[NSData alloc] initWithBase64EncodedString:text options:NSDataBase64DecodingIgnoreUnknownCharacters];
+
+    NSString * string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+    StringEncryption * encrypt  = [[StringEncryption alloc] init];
+    data = [encrypt decrypt:data key:@"12345678901234561234567890123456" iv:@"6543210987654321"];
+
+    string = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
+
+    testLable.text = string;
+}
+</code></pre>
+
+<p>OK！是不是蛮简单的，跑起来运行一下试试。</p>
+
+<blockquote>
+  <p>注：千万要注意密钥和向量的长度要和方法里面的一一对应起来哦！</p>
+</blockquote>
 <!-- content end -->
 </div>
 <br>
