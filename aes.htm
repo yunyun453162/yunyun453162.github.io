@@ -49,6 +49,108 @@ AES是一种对称加密算法，它是用密钥对块数据进行加密的，�
     };
 AES还需一个密钥向量与之来配合，默认是16位的0。在我们使用的时候要注意密钥和向量的长度需要满足以上三种情况之一，但不要求密钥和向量一样长，也就是说我们可以用一个256位的密钥`(key)`,而用一个128位的密钥向量`(iv)`。
 
+
+我们在加密文件中对外提供以下两个接口：  
+
+    -  (NSData *)encrypt:(NSData *)plainText key:(NSString *)key iv:(NSString *)iv;
+    -  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
+
+再在`.m`文件中实现这两个接口：
+在这个代码例子中，我们的key是256位的，超过的会被截断，而向量iv则是128位的。
+
+    - (NSData *)encrypt:(NSData *)plainText key:(NSString *)key  iv:(NSString *)iv {
+        char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+        ivPointer[kCCBlockSizeAES128+2];
+        BOOL patchNeeded;
+        bzero(keyPointer, sizeof(keyPointer)); // fill with zeroes for padding
+        patchNeeded= ([key length] > kCCKeySizeAES256+1);
+        if(patchNeeded)
+        {
+            NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+            key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+        }
+        
+        [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+        [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+        
+        if (patchNeeded) {
+            keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+        }
+        
+        NSUInteger dataLength = [plainText length];
+        
+        //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+        // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+        size_t buffSize = dataLength + kCCBlockSizeAES128;
+        void *buff = malloc(buffSize);
+        
+        size_t numBytesEncrypted = 0;
+        //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+        //for details on this function
+        //Stateless, one-shot encrypt or decrypt operation.
+        CCCryptorStatus status = CCCrypt(kCCEncrypt, /* kCCEncrypt, etc. */
+                                         kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                         kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                         keyPointer, kCCKeySizeAES256, /* key and its length */
+                                         ivPointer, /* initialization vector - use random IV everytime */
+                                         [plainText bytes], [plainText length], /* input  */
+                                         buff, buffSize,/* data RETURNED here */
+                                         &numBytesEncrypted);
+        if (status == kCCSuccess) {
+            return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        }
+        
+        free(buff);
+        return nil;
+    }
+
+--- -
+    -(NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv {
+        char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+        ivPointer[kCCBlockSizeAES128+2];
+        BOOL patchNeeded;
+      
+        patchNeeded = ([key length] > kCCKeySizeAES256+1);
+        if(patchNeeded)
+        {
+            NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+            key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+        }
+
+        [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+        [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+
+        if (patchNeeded) {
+            keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+        }
+        
+        NSUInteger dataLength = [encryptedText length];
+        
+        //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+        // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+        size_t buffSize = dataLength + kCCBlockSizeAES128;
+        
+        void *buff = malloc(buffSize);
+        
+        size_t numBytesEncrypted = 0;
+        //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+        //for details on this function
+        //Stateless, one-shot encrypt or decrypt operation.
+        CCCryptorStatus status = CCCrypt(kCCDecrypt,/* kCCEncrypt, etc. */
+                                         kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                         kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                         keyPointer, kCCKeySizeAES256,/* key and its length */
+                                         ivPointer, /* initialization vector - use same IV which was used for decryption */
+                                         [encryptedText bytes], [encryptedText length], //input
+                                         buff, buffSize,//output
+                                         &numBytesEncrypted);
+        if (status == kCCSuccess) {
+            return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+        }
+        
+        free(buff);
+        return nil;
+    }
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -80,6 +182,112 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 </code></pre>
 
 <p>AES还需一个密钥向量与之来配合，默认是16位的0。在我们使用的时候要注意密钥和向量的长度需要满足以上三种情况之一，但不要求密钥和向量一样长，也就是说我们可以用一个256位的密钥<code>(key)</code>,而用一个128位的密钥向量<code>(iv)</code>。</p>
+
+<p>我们在加密文件中对外提供以下两个接口：  </p>
+
+<pre><code>-  (NSData *)encrypt:(NSData *)plainText key:(NSString *)key iv:(NSString *)iv;
+-  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
+</code></pre>
+
+<p>再在<code>.m</code>文件中实现这两个接口：
+在这个代码例子中，我们的key是256位的，超过的会被截断，而向量iv则是128位的。</p>
+
+<pre><code>- (NSData *)encrypt:(NSData *)plainText key:(NSString *)key  iv:(NSString *)iv {
+    char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+    ivPointer[kCCBlockSizeAES128+2];
+    BOOL patchNeeded;
+    bzero(keyPointer, sizeof(keyPointer)); // fill with zeroes for padding
+    patchNeeded= ([key length] &gt; kCCKeySizeAES256+1);
+    if(patchNeeded)
+    {
+        NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+        key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+    }
+
+    [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+    [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+
+    if (patchNeeded) {
+        keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+    }
+
+    NSUInteger dataLength = [plainText length];
+
+    //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+    // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+    size_t buffSize = dataLength + kCCBlockSizeAES128;
+    void *buff = malloc(buffSize);
+
+    size_t numBytesEncrypted = 0;
+    //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+    //for details on this function
+    //Stateless, one-shot encrypt or decrypt operation.
+    CCCryptorStatus status = CCCrypt(kCCEncrypt, /* kCCEncrypt, etc. */
+                                     kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                     kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                     keyPointer, kCCKeySizeAES256, /* key and its length */
+                                     ivPointer, /* initialization vector - use random IV everytime */
+                                     [plainText bytes], [plainText length], /* input  */
+                                     buff, buffSize,/* data RETURNED here */
+                                     &amp;numBytesEncrypted);
+    if (status == kCCSuccess) {
+        return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+    }
+
+    free(buff);
+    return nil;
+}
+</code></pre>
+
+<hr>
+
+<pre><code>-(NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv {
+    char keyPointer[kCCKeySizeAES256+2],// room for terminator (unused) ref: https://devforums.apple.com/message/876053#876053
+    ivPointer[kCCBlockSizeAES128+2];
+    BOOL patchNeeded;
+
+    patchNeeded = ([key length] &gt; kCCKeySizeAES256+1);
+    if(patchNeeded)
+    {
+        NSLog(@"Key length is longer %lu", (unsigned long)[[[StringEncryption alloc] md5:key] length]);
+        key = [key substringToIndex:kCCKeySizeAES256]; // Ensure that the key isn't longer than what's needed (kCCKeySizeAES256)
+    }
+
+    [key getCString:keyPointer maxLength:sizeof(keyPointer) encoding:NSUTF8StringEncoding];
+    [iv getCString:ivPointer maxLength:sizeof(ivPointer) encoding:NSUTF8StringEncoding];
+
+    if (patchNeeded) {
+        keyPointer[0] = '\0';  // Previous iOS version than iOS7 set the first char to '\0' if the key was longer than kCCKeySizeAES256
+    }
+
+    NSUInteger dataLength = [encryptedText length];
+
+    //see https://developer.apple.com/library/ios/documentation/System/Conceptual/ManPages_iPhoneOS/man3/CCryptorCreateFromData.3cc.html
+    // For block ciphers, the output size will always be less than or equal to the input size plus the size of one block.
+    size_t buffSize = dataLength + kCCBlockSizeAES128;
+
+    void *buff = malloc(buffSize);
+
+    size_t numBytesEncrypted = 0;
+    //refer to http://www.opensource.apple.com/source/CommonCrypto/CommonCrypto-36064/CommonCrypto/CommonCryptor.h
+    //for details on this function
+    //Stateless, one-shot encrypt or decrypt operation.
+    CCCryptorStatus status = CCCrypt(kCCDecrypt,/* kCCEncrypt, etc. */
+                                     kCCAlgorithmAES128, /* kCCAlgorithmAES128, etc. */
+                                     kCCOptionPKCS7Padding, /* kCCOptionPKCS7Padding, etc. */
+                                     keyPointer, kCCKeySizeAES256,/* key and its length */
+                                     ivPointer, /* initialization vector - use same IV which was used for decryption */
+                                     [encryptedText bytes], [encryptedText length], //input
+                                     buff, buffSize,//output
+                                     &amp;numBytesEncrypted);
+    if (status == kCCSuccess) {
+        return [NSData dataWithBytesNoCopy:buff length:numBytesEncrypted];
+    }
+
+    free(buff);
+    return nil;
+}
+</code></pre>
 <!-- content end -->
 </div>
 <br>
