@@ -63,13 +63,13 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 
     openssl genrsa -out private_key.pem 1024
 我们用记事本打开生成的证书  
-![私钥证书字符](img/private_pem.png)
+![私钥证书字符](imgs/private_pem.png)
 
 2)创建证书请求（按照提示输入信息）
 
     openssl req -new -out cert.csr -key private_key.pem
 这个过程中我们需在填写一些信息：  
-![信息](img/companyInfo.png)
+![信息](imgs/companyInfo.png)
 
 3)自签署根证书  
    
@@ -143,7 +143,7 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 </code></pre>
 
 <p>我们用记事本打开生成的证书 <br>
-<img src="img/private_pem.png" alt="私钥证书字符" title=""></p>
+<img src="imgs/private_pem.png" alt="私钥证书字符" title=""></p>
 
 <p>2)创建证书请求（按照提示输入信息）</p>
 
@@ -151,7 +151,7 @@ rsa:1024这里的1024是密钥长度，1024是比较安全的，如果需要更�
 </code></pre>
 
 <p>这个过程中我们需在填写一些信息： <br>
-<img src="img/companyInfo.png" alt="信息" title=""></p>
+<img src="imgs/companyInfo.png" alt="信息" title=""></p>
 
 <p>3)自签署根证书  </p>
 
