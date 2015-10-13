@@ -49,11 +49,26 @@ AES是一种对称加密算法，它是用密钥对块数据进行加密的，�
     };
 AES还需一个密钥向量与之来配合，默认是16位的0。在我们使用的时候要注意密钥和向量的长度需要满足以上三种情况之一，但不要求密钥和向量一样长，也就是说我们可以用一个256位的密钥`(key)`,而用一个128位的密钥向量`(iv)`。
 
+它有两种填充模式：  
+ 
+    enum {
+        /* options for block ciphers */
+        kCCOptionPKCS7Padding   = 0x0001,
+        kCCOptionECBMode        = 0x0002
+        /* stream ciphers currently have no options */
+    };
+
+一般我们用kCCOptionPKCS7Padding，不过和Android那边统一还有点工作要做的。
+
 
 我们在加密文件中对外提供以下两个接口：  
 
     -  (NSData *)encrypt:(NSData *)plainText key:(NSString *)key iv:(NSString *)iv;
     -  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
+并引入加密头文件：  
+
+    #import <CommonCrypto/CommonDigest.h>
+    #import <CommonCrypto/CommonCryptor.h>
 
 再在`.m`文件中实现这两个接口：
 在这个代码例子中，我们的key是256位的，超过的会被截断，而向量iv则是128位的。
@@ -151,6 +166,8 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
         free(buff);
         return nil;
     }
+
+我把上面写来的两个方法
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
@@ -183,10 +200,28 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
 
 <p>AES还需一个密钥向量与之来配合，默认是16位的0。在我们使用的时候要注意密钥和向量的长度需要满足以上三种情况之一，但不要求密钥和向量一样长，也就是说我们可以用一个256位的密钥<code>(key)</code>,而用一个128位的密钥向量<code>(iv)</code>。</p>
 
+<p>它有两种填充模式：  </p>
+
+<pre><code>enum {
+    /* options for block ciphers */
+    kCCOptionPKCS7Padding   = 0x0001,
+    kCCOptionECBMode        = 0x0002
+    /* stream ciphers currently have no options */
+};
+</code></pre>
+
+<p>一般我们用kCCOptionPKCS7Padding，不过和Android那边统一还有点工作要做的。</p>
+
 <p>我们在加密文件中对外提供以下两个接口：  </p>
 
 <pre><code>-  (NSData *)encrypt:(NSData *)plainText key:(NSString *)key iv:(NSString *)iv;
 -  (NSData *)decrypt:(NSData *)encryptedText key:(NSString *)key iv:(NSString *)iv;
+</code></pre>
+
+<p>并引入加密头文件：  </p>
+
+<pre><code>#import &lt;CommonCrypto/CommonDigest.h&gt;
+#import &lt;CommonCrypto/CommonCryptor.h&gt;
 </code></pre>
 
 <p>再在<code>.m</code>文件中实现这两个接口：
@@ -288,6 +323,8 @@ AES还需一个密钥向量与之来配合，默认是16位的0。在我们使�
     return nil;
 }
 </code></pre>
+
+<p>我把上面写来的两个方法</p>
 <!-- content end -->
 </div>
 <br>
