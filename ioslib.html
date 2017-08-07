@@ -25,12 +25,34 @@
 	</div>
 <div id="md" style="display: none;">
 <!-- markdown -->
+###静态库引用静态库冲突问题
 
+
+在用cocoapods管理静态库的时候，有时不免要把一些公用库打包成静态库如.a或是framework。这些库还能还会有其它公共的依赖。
+
+如果按默认的设置直接打的话，我们会碰到在做pod管理时报符号冲突。
+
+
+解决的办法比较简单，直接点项目文件->target->build phases.
+
+选中 link binary with libraries ,删除我们要公开公用的库即可。假如是用pod管理的，那么删掉pod生成的那个lib即可
+
+还有一个需要注意的是，我们在build的时候需要把scheme改成release方式。
 <!-- markdown end -->
 </div>
 <div class="entry" id="main">
 <!-- content -->
+<h3 id="">静态库引用静态库冲突问题</h3>
 
+<p>在用cocoapods管理静态库的时候，有时不免要把一些公用库打包成静态库如.a或是framework。这些库还能还会有其它公共的依赖。</p>
+
+<p>如果按默认的设置直接打的话，我们会碰到在做pod管理时报符号冲突。</p>
+
+<p>解决的办法比较简单，直接点项目文件-&gt;target-&gt;build phases.</p>
+
+<p>选中 link binary with libraries ,删除我们要公开公用的库即可。假如是用pod管理的，那么删掉pod生成的那个lib即可</p>
+
+<p>还有一个需要注意的是，我们在build的时候需要把scheme改成release方式。</p>
 <!-- content end -->
 </div>
 <br>
